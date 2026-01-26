@@ -1,0 +1,18 @@
+# Public 資料夾
+
+此資料夾用於存放靜態資源,如圖片、字型等。
+
+## 如何添加個人照片
+
+1. 將您的個人照片放入此資料夾,命名為 `profile.jpg` 或 `profile.png`
+2. 建議尺寸: 至少 400x400 像素的正方形圖片
+3. 檔案格式: JPG, PNG 或 WebP
+
+然後修改 `app/pages/index.vue` 中的照片區域:
+
+```vue
+<!-- 將佔位符替換為真實照片 -->
+<div class="profile-photo__image">
+  <img src="/profile.jpg" alt="李松年" />
+</div>
+```
