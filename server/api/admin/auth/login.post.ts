@@ -13,6 +13,8 @@ interface LoginRequest {
 
 export default defineEventHandler(async (event) => {
   try {
+    console.log('🔐 開始處理登入請求')
+
     // 讀取請求資料
     const body = await readBody<LoginRequest>(event)
 
@@ -24,11 +26,15 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    console.log(`📝 嘗試登入帳號: ${body.username}`)
+
     // 查詢使用者
     const collection = await getCollection<AdminUserDocument>(COLLECTIONS.ADMIN_USERS)
     const user = await collection.findOne({
       username: body.username
     })
+
+    console.log(`👤 找到使用者: ${user ? '是' : '否'}`)
 
     if (!user) {
       throw createError({
@@ -101,8 +107,12 @@ export default defineEventHandler(async (event) => {
       }
     )
 
+    console.log('✅ 密碼驗證成功，準備生成 JWT Token')
+
     // 生成 JWT Token
     const token = generateToken(user)
+
+    console.log('🎫 JWT Token 生成成功')
 
     // 設置 Cookie
     setAuthCookie(event, token)

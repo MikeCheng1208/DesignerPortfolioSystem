@@ -46,7 +46,14 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
 export function generateToken(user: AdminUserDocument): string {
   const config = useRuntimeConfig()
 
+  console.log('🔍 檢查 JWT_SECRET 配置')
+  console.log('   process.env.JWT_SECRET:', process.env.JWT_SECRET ? '已設定' : '未設定')
+  console.log('   config.jwtSecret 存在:', !!config.jwtSecret)
+  console.log('   config.jwtSecret 長度:', config.jwtSecret?.length || 0)
+
   if (!config.jwtSecret) {
+    console.error('❌ JWT_SECRET 未配置！')
+    console.error('   請確認 Zeabur 環境變數中已設定 JWT_SECRET')
     throw new Error('JWT_SECRET is not configured')
   }
 
