@@ -11,7 +11,7 @@ import type {
   SkillCategoryDocument,
   ContactDocument,
   COLLECTIONS
-} from '~/app/types/database'
+} from '../../app/types/database'
 
 // ==================== Profile 相關 ====================
 
@@ -28,7 +28,13 @@ export async function getActiveProfile() {
 
   // 移除 MongoDB 的 _id 和內部欄位
   const { _id, isActive, createdAt, updatedAt, ...profileData } = profile
-  return profileData
+
+  // 確保返回的資料包含 heroTitle 和 heroSubtitle
+  return {
+    ...profileData,
+    heroTitle: profileData.heroTitle || '創造有意義的\n數位體驗',
+    heroSubtitle: profileData.heroSubtitle || '專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值'
+  }
 }
 
 // ==================== Projects 相關 ====================

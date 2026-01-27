@@ -29,6 +29,8 @@ export interface ProfileDocument extends BaseDocument {
   bio: string[]
   philosophy: string
   photo?: string
+  heroTitle?: string  // 首頁主標語
+  heroSubtitle?: string  // 首頁副標語
   isActive: boolean  // 是否啟用（預留多人支援）
 }
 
@@ -135,6 +137,51 @@ export interface ContactDocument extends BaseDocument {
   isActive: boolean             // 是否啟用
 }
 
+// ==================== Admin Users Collection ====================
+
+/**
+ * Admin User Role 型別
+ */
+export type AdminRole = 'super_admin' | 'admin' | 'editor'
+
+/**
+ * Admin User Document (後台使用者)
+ * Collection: admin_users
+ */
+export interface AdminUserDocument extends BaseDocument {
+  username: string              // 登入帳號 (unique)
+  email: string                 // Email (unique)
+  passwordHash: string          // bcrypt 加密的密碼
+  displayName: string           // 顯示名稱
+  role: AdminRole               // 角色
+  permissions: string[]         // 權限列表
+  isActive: boolean             // 帳號狀態
+  lastLoginAt?: Date            // 最後登入時間
+  loginAttempts: number         // 登入失敗次數
+  lockedUntil?: Date            // 帳號鎖定至
+  avatar?: string               // 頭像 URL
+  preferences?: Record<string, any>  // 使用者偏好設定
+  createdBy?: string            // 建立者
+  updatedBy?: string            // 更新者
+}
+
+/**
+ * Admin User Response (不包含敏感資訊)
+ */
+export interface AdminUserResponse {
+  _id: string
+  username: string
+  email: string
+  displayName: string
+  role: AdminRole
+  permissions: string[]
+  isActive: boolean
+  lastLoginAt?: string
+  avatar?: string
+  createdAt: string
+  updatedAt: string
+}
+
 // ==================== Collection 名稱常數 ====================
 
 export const COLLECTIONS = {
@@ -142,6 +189,7 @@ export const COLLECTIONS = {
   PROJECTS: 'projects',
   SKILLS: 'skills',
   CONTACT: 'contact',
+  ADMIN_USERS: 'admin_users',
 } as const
 
 // ==================== 索引定義 ====================
@@ -213,5 +261,22 @@ export const DATABASE_INDEXES: IndexDefinition[] = [
     collection: COLLECTIONS.CONTACT,
     key: { isActive: 1 },
     options: { name: 'idx_contact_isActive' }
+  },
+
+  // Admin Users 索引
+  {
+    collection: COLLECTIONS.ADMIN_USERS,
+    key: { username: 1 },
+    options: { unique: true, name: 'idx_admin_users_username' }
+  },
+  {
+    collection: COLLECTIONS.ADMIN_USERS,
+    key: { email: 1 },
+    options: { unique: true, name: 'idx_admin_users_email' }
+  },
+  {
+    collection: COLLECTIONS.ADMIN_USERS,
+    key: { isActive: 1, role: 1 },
+    options: { name: 'idx_admin_users_active_role' }
   }
 ]

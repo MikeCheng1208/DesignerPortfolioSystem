@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import type { ProjectDetail, ProjectCard } from '~/types/api'
+import Lightbox from '~/components/Lightbox.vue'
 
 const route = useRoute()
 const projectId = route.params.id as string
@@ -162,7 +163,7 @@ useHead(() => ({
       </section>
 
       <!-- Results -->
-      <section class="project-results">
+      <section v-if="project.showResults !== false && project.results && project.results.length > 0" class="project-results">
         <div class="project-results__container">
           <h2 class="section-title">成果</h2>
           <div class="results-grid">

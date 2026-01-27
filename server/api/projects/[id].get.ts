@@ -1,5 +1,5 @@
 import { getProjectById } from '../../utils/db-helpers'
-import type { ProjectDetail } from '~/app/types/api'
+import type { ProjectDetail } from '../../../app/types/api'
 
 /**
  * GET /api/projects/:id

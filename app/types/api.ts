@@ -10,6 +10,8 @@ export interface Profile {
   bio: string[]
   philosophy: string
   photo?: string // 個人照片路徑 (可選)
+  heroTitle?: string // 首頁主標語
+  heroSubtitle?: string // 首頁副標語
 }
 
 /**

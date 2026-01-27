@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import type { Profile, ProjectCard, SkillCategory, ContactInfo } from '~/types/api'
 
 const scrolled = ref(false)
@@ -9,6 +9,15 @@ const { data: profile } = await useFetch<Profile>('/api/profile')
 const { data: projects } = await useFetch<ProjectCard[]>('/api/projects')
 const { data: skills } = await useFetch<SkillCategory[]>('/api/skills')
 const { data: contact } = await useFetch<ContactInfo>('/api/contact')
+
+// 處理標語的換行
+const heroTitleLines = computed(() =>
+  (profile.value?.heroTitle || '創造有意義的\n數位體驗').split('\n')
+)
+
+const heroSubtitleLines = computed(() =>
+  (profile.value?.heroSubtitle || '專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值').split('\n')
+)
 
 const handleScroll = () => {
   scrolled.value = window.scrollY > 50
@@ -42,12 +51,19 @@ onUnmounted(() => {
       <div class="hero__container">
         <div class="hero__label">{{ profile?.title || 'UI/UX Designer' }}</div>
         <h1 class="hero__title">
-          <span class="hero__title-line">創造有意義的</span>
-          <span class="hero__title-line">數位體驗</span>
+          <span
+            v-for="(line, index) in heroTitleLines"
+            :key="index"
+            class="hero__title-line"
+            :style="{ animationDelay: `${0.3 + index * 0.2}s` }"
+          >
+            {{ line }}
+          </span>
         </h1>
         <p class="hero__subtitle">
-          專注於使用者體驗設計與介面創新，<br>
-          透過設計解決問題，創造價值
+          <template v-for="(line, index) in heroSubtitleLines" :key="index">
+            {{ line }}<br v-if="index < heroSubtitleLines.length - 1" />
+          </template>
         </p>
         <a href="#work" class="hero__cta">
           <span>探索作品</span>
@@ -303,14 +319,6 @@ onUnmounted(() => {
   display: block;
   opacity: 0;
   animation: fadeInUp 0.8s var(--ease-out-expo) forwards;
-}
-
-.hero__title-line:first-child {
-  animation-delay: 0.3s;
-}
-
-.hero__title-line:last-child {
-  animation-delay: 0.5s;
 }
 
 .hero__subtitle {

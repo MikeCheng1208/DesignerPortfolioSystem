@@ -12,8 +12,18 @@ let db: Db | null = null
  * 獲取 MongoDB 客戶端
  */
 export async function getMongoClient(): Promise<MongoClient> {
-  if (client && client.topology && client.topology.isConnected()) {
-    return client
+  // 檢查現有連線是否有效
+  if (client) {
+    try {
+      // 嘗試 ping 測試連線
+      await client.db('admin').command({ ping: 1 })
+      return client
+    } catch (error) {
+      // 連線已失效,清除並重新連線
+      console.log('⚠️ MongoDB 連線已失效,正在重新連線...')
+      client = null
+      db = null
+    }
   }
 
   const config = useRuntimeConfig()
@@ -27,8 +37,12 @@ export async function getMongoClient(): Promise<MongoClient> {
     client = new MongoClient(uri, {
       maxPoolSize: 10,
       minPoolSize: 2,
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 60000,
+      connectTimeoutMS: 10000,
+      heartbeatFrequencyMS: 10000,
+      retryWrites: true,
+      retryReads: true,
     })
 
     await client.connect()
@@ -36,6 +50,8 @@ export async function getMongoClient(): Promise<MongoClient> {
     return client
   } catch (error) {
     console.error('❌ MongoDB 連線失敗:', error)
+    client = null
+    db = null
     throw error
   }
 }
@@ -44,13 +60,10 @@ export async function getMongoClient(): Promise<MongoClient> {
  * 獲取資料庫實例
  */
 export async function getDatabase(): Promise<Db> {
-  if (db) {
-    return db
-  }
-
   const config = useRuntimeConfig()
   const dbName = config.mongodbDatabase || 'zeabur'
 
+  // 每次都重新獲取 client 以確保連線有效
   const mongoClient = await getMongoClient()
   db = mongoClient.db(dbName)
 

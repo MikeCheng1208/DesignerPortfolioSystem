@@ -1,5 +1,5 @@
 import { getActiveProfile } from '../utils/db-helpers'
-import type { Profile } from '~/app/types/api'
+import type { Profile } from '../../app/types/api'
 
 /**
  * GET /api/profile

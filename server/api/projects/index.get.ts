@@ -1,5 +1,5 @@
 import { getPublishedProjects } from '../../utils/db-helpers'
-import type { ProjectCard } from '~/app/types/api'
+import type { ProjectCard } from '../../../app/types/api'
 
 /**
  * GET /api/projects

@@ -1,5 +1,5 @@
 import { getVisibleSkills } from '../utils/db-helpers'
-import type { SkillCategory } from '~/app/types/api'
+import type { SkillCategory } from '../../app/types/api'
 
 /**
  * GET /api/skills

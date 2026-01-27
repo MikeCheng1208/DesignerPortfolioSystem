@@ -22,4 +22,3 @@ logs
 .env
 .env.local
 .env.*.local
-ZEABUR-DEPLOYMENT.md

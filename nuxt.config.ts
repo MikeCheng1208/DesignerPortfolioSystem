@@ -1,10 +1,14 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  // 添加這個 Nitro 配置  
-  nitro: {  
+
+  // Nuxt Modules
+  modules: ['@nuxt/ui'],
+
+  // 添加這個 Nitro 配置
+  nitro: {
     preset: 'node-server'
-  },  
+  },
   // Runtime 配置 - 環境變數
   runtimeConfig: {
     // Server-side 環境變數（不會暴露給客戶端）
@@ -13,7 +17,9 @@ export default defineNuxtConfig({
     mongodbPassword: process.env.MONGODB_PASSWORD || '',
     mongodbHost: process.env.MONGODB_HOST || '',
     mongodbPort: process.env.MONGODB_PORT || '27017',
-    mongodbDatabase: process.env.MONGODB_DATABASE || ''
+    mongodbDatabase: process.env.MONGODB_DATABASE || '',
+    jwtSecret: process.env.JWT_SECRET || '',
+    cookieSecure: process.env.COOKIE_SECURE === 'true'
   },
   devtools: { enabled: true },
 
@@ -41,6 +47,35 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: 'anonymous' }
+      ],
+      style: [
+        {
+          children: `
+            /* Critical CSS - 防止 FOUC */
+            html {
+              background: #fafaf9;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+              background: #fafaf9;
+              color: #1a1a1a;
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+            }
+            /* 預設隱藏內容，避免 FOUC */
+            #__nuxt {
+              opacity: 0;
+              transition: opacity 0.3s ease;
+            }
+            /* Vue 載入完成後顯示 */
+            #__nuxt.nuxt-loaded {
+              opacity: 1;
+            }
+          `,
+          type: 'text/css'
+        }
       ]
     }
   },
@@ -55,6 +90,15 @@ export default defineNuxtConfig({
   // 效能優化
   experimental: {
     payloadExtraction: true,
-    renderJsonPayloads: true
+    renderJsonPayloads: true,
+    inlineSSRStyles: false
+  },
+
+  // CSS 配置
+  css: ['~/app.css'],
+
+  // 路由規則 - Admin 全部使用 CSR
+  routeRules: {
+    '/admin/**': { ssr: false }
   },
 })

@@ -1,5 +1,5 @@
 import { getActiveContact } from '../utils/db-helpers'
-import type { ContactInfo } from '~/app/types/api'
+import type { ContactInfo } from '../../app/types/api'
 
 /**
  * GET /api/contact
