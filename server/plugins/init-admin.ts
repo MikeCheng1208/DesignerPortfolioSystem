@@ -31,7 +31,8 @@ export default defineNitroPlugin(async () => {
     const existingAdmin = await collection.findOne({ username: 'admin' })
 
     if (existingAdmin) {
-      console.log('✅ Admin 帳號已存在')
+      console.log('✅ Admin 帳號已存在，跳過初始化')
+      console.log('   現有帳號不會被修改或重置')
       return
     }
 
