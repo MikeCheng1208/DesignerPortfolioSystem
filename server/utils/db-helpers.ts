@@ -59,7 +59,8 @@ export async function getPublishedProjects() {
       year: data.year,
       description: data.description,
       tags: data.tags,
-      color: data.color
+      color: data.color,
+      coverImage: data.coverImage
     }
   })
 }
@@ -93,6 +94,7 @@ export async function getProjectById(projectId: string) {
     year: projectData.year,
     description: projectData.description,
     tags: projectData.tags,
+    coverImage: projectData.coverImage,
     coverGradient: projectData.coverGradient,
     overview: projectData.overview,
     client: projectData.client,

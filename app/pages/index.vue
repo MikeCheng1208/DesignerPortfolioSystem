@@ -95,7 +95,14 @@ onUnmounted(() => {
           >
             <div class="project-card__image">
               <div class="project-card__image-inner" :style="{ background: project.color }">
-                <span class="project-card__number">{{ String(index + 1).padStart(2, '0') }}</span>
+                <img
+                  v-if="project.coverImage"
+                  :src="project.coverImage"
+                  :alt="project.title"
+                  class="project-card__cover"
+                  loading="lazy"
+                />
+                <span v-else class="project-card__number">{{ String(index + 1).padStart(2, '0') }}</span>
               </div>
             </div>
             <div class="project-card__content">
@@ -440,9 +447,24 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   transition: transform 0.6s var(--ease-out-expo);
+  position: relative;
+  overflow: hidden;
 }
 
 .project-card:hover .project-card__image-inner {
+  transform: scale(1.05);
+}
+
+.project-card__cover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.project-card:hover .project-card__cover {
   transform: scale(1.05);
 }
 

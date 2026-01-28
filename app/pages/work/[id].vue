@@ -81,7 +81,14 @@ useHead(() => ({
       <section class="project-cover">
         <div class="project-cover__container">
           <div class="project-cover__image" :style="{ background: project.coverGradient }">
-            <div class="project-cover__overlay">
+            <img
+              v-if="project.coverImage"
+              :src="project.coverImage"
+              :alt="project.title"
+              class="project-cover__img"
+              loading="lazy"
+            />
+            <div v-else class="project-cover__overlay">
               <span class="project-cover__label">專案封面</span>
             </div>
           </div>
@@ -149,7 +156,14 @@ useHead(() => ({
               @click="openLightbox(index)"
             >
               <div class="gallery__image" :style="{ background: image.gradient }">
-                <div class="gallery__label">{{ image.label }}</div>
+                <img
+                  v-if="image.src"
+                  :src="image.src"
+                  :alt="image.label"
+                  class="gallery__img"
+                  loading="lazy"
+                />
+                <div v-else class="gallery__label">{{ image.label }}</div>
                 <div class="gallery__overlay">
                   <svg width="48" height="48" viewBox="0 0 24 24" fill="none">
                     <path d="M15 3H21V9M9 21H3V15M21 3L13.5 10.5M3 21L10.5 13.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -349,6 +363,14 @@ useHead(() => ({
   animation: fadeInUp 0.8s var(--ease-out-expo) 0.6s forwards;
 }
 
+.project-cover__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .project-cover__overlay {
   position: absolute;
   inset: 0;
@@ -488,6 +510,19 @@ useHead(() => ({
   position: relative;
   overflow: hidden;
   transition: transform 0.6s var(--ease-out-expo);
+}
+
+.gallery__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out-expo);
+}
+
+.gallery__item:hover .gallery__img {
+  transform: scale(1.05);
 }
 
 .gallery__item:hover .gallery__image {

@@ -25,6 +25,7 @@ export interface ProjectCard {
   description: string
   tags: string[]
   color: string // 漸層色彩
+  coverImage?: string // 封面圖片 URL
 }
 
 /**
@@ -37,7 +38,8 @@ export interface ProjectDetail {
   year: string
   description: string
   tags: string[]
-  coverGradient: string
+  coverImage?: string   // 封面圖片 URL
+  coverGradient: string // 封面漸層色（備用）
 
   // 專案概述
   overview: string
@@ -62,7 +64,8 @@ export interface ProjectDetail {
  */
 export interface ProjectImage {
   layout: 'full' | 'half'
-  gradient: string
+  src?: string           // 圖片 URL
+  gradient: string       // 漸層色（作為備用背景）
   label: string
   caption?: string
 }

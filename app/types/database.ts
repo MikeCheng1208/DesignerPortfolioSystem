@@ -41,7 +41,8 @@ export interface ProfileDocument extends BaseDocument {
  */
 export interface ProjectImageSchema {
   layout: 'full' | 'half'
-  gradient: string
+  src?: string           // 圖片 URL
+  gradient: string       // 漸層色（作為備用背景或載入中顯示）
   label: string
   caption?: string
   order: number  // 排序順序
@@ -68,7 +69,8 @@ export interface ProjectDocument extends BaseDocument {
   description: string
   tags: string[]
   color: string  // 卡片漸層色
-  coverGradient: string  // 封面漸層色
+  coverImage?: string  // 封面圖片 URL
+  coverGradient: string  // 封面漸層色（作為備用）
 
   // 專案詳細資訊
   overview: string

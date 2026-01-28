@@ -2,6 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from "vue";
 
 interface LightboxImage {
+  src?: string;
   gradient: string;
   label: string;
   caption?: string;
@@ -141,8 +142,17 @@ defineExpose({ open, close });
         <div class="lightbox__content" @click.stop>
           <Transition :name="transitionName" mode="out-in">
             <div :key="currentIndex" class="lightbox__image-wrapper">
+              <!-- 有圖片時顯示圖片 -->
+              <img
+                v-if="currentImage?.src"
+                :src="currentImage.src"
+                :alt="currentImage.label"
+                class="lightbox__img"
+              />
+              <!-- 沒圖片時顯示漸層背景 -->
               <div
-                class="lightbox__image"
+                v-else
+                class="lightbox__placeholder"
                 :style="{ background: currentImage?.gradient }"
               >
                 <div class="lightbox__label">{{ currentImage?.label }}</div>
@@ -150,14 +160,14 @@ defineExpose({ open, close });
             </div>
           </Transition>
 
-          <!-- Caption -->
-          <div v-if="currentImage?.caption" class="lightbox__caption">
-            {{ currentImage.caption }}
-          </div>
-
-          <!-- Counter -->
-          <div class="lightbox__counter">
-            {{ currentIndex + 1 }} / {{ images.length }}
+          <!-- Caption & Counter -->
+          <div class="lightbox__info">
+            <div v-if="currentImage?.caption" class="lightbox__caption">
+              {{ currentImage.caption }}
+            </div>
+            <div class="lightbox__counter">
+              {{ currentIndex + 1 }} / {{ images.length }}
+            </div>
           </div>
         </div>
       </div>
@@ -233,22 +243,53 @@ defineExpose({ open, close });
 }
 
 .lightbox__content {
-  max-width: 90vw;
-  max-height: 90vh;
+  width: 100%;
+  height: 100%;
+  max-width: calc(100vw - 160px); /* 左右留空間給導航按鈕 */
+  max-height: calc(100vh - 120px); /* 上下留空間給關閉和計數器 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  justify-content: center;
+  gap: 1rem;
+  padding: 60px 0;
 }
 
 .lightbox__image-wrapper {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
   width: 100%;
-  max-width: 1200px;
+  min-height: 0; /* 重要：允許 flex 子元素縮小 */
 }
 
 .lightbox__image {
-  width: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.lightbox__img {
+  max-width: calc(100vw - 160px);
+  max-height: calc(100vh - 200px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox__placeholder {
+  width: 80vw;
+  max-width: 1000px;
   aspect-ratio: 16 / 10;
   border-radius: 12px;
   display: flex;
@@ -263,19 +304,24 @@ defineExpose({ open, close });
   font-weight: 300;
 }
 
+.lightbox__info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 2rem;
+}
+
 .lightbox__caption {
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 1rem;
   text-align: center;
-  max-width: 600px;
+  max-width: 700px;
+  line-height: 1.6;
 }
 
 .lightbox__counter {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.875rem;
   font-variant-numeric: tabular-nums;
 }
@@ -323,71 +369,29 @@ defineExpose({ open, close });
 /* 平板 (768px - 1024px) */
 @media (max-width: 1024px) {
   .lightbox {
-    padding: 1.5rem;
-  }
-
-  .lightbox__content {
-    max-width: 85vw;
-    max-height: 85vh;
-  }
-
-  .lightbox__close {
-    top: 1.5rem;
-    right: 1.5rem;
-    width: 44px;
-    height: 44px;
-  }
-
-  .lightbox__nav {
-    width: 56px;
-    height: 56px;
-  }
-
-  .lightbox__nav--prev {
-    left: 1.5rem;
-  }
-
-  .lightbox__nav--next {
-    right: 1.5rem;
-  }
-
-  .lightbox__counter {
-    bottom: 1.5rem;
-  }
-}
-
-/* 手機橫向 / 小平板 (640px - 768px) */
-@media (max-width: 768px) {
-  .lightbox {
     padding: 1rem;
   }
 
   .lightbox__content {
-    max-width: 90vw;
-    max-height: 90vh;
-    gap: 1.25rem;
+    max-width: calc(100vw - 120px);
+    padding: 50px 0;
+  }
+
+  .lightbox__img {
+    max-width: calc(100vw - 120px);
+    max-height: calc(100vh - 160px);
   }
 
   .lightbox__close {
     top: 1rem;
     right: 1rem;
-    width: 40px;
-    height: 40px;
-  }
-
-  .lightbox__close svg {
-    width: 28px;
-    height: 28px;
+    width: 44px;
+    height: 44px;
   }
 
   .lightbox__nav {
-    width: 48px;
-    height: 48px;
-  }
-
-  .lightbox__nav svg {
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
   }
 
   .lightbox__nav--prev {
@@ -397,40 +401,30 @@ defineExpose({ open, close });
   .lightbox__nav--next {
     right: 1rem;
   }
-
-  .lightbox__image {
-    border-radius: 8px;
-  }
-
-  .lightbox__caption {
-    font-size: 0.9375rem;
-    max-width: 100%;
-    padding: 0 1rem;
-  }
-
-  .lightbox__counter {
-    bottom: 1rem;
-    font-size: 0.8125rem;
-  }
 }
 
-/* 手機直向 (< 640px) */
-@media (max-width: 640px) {
+/* 手機橫向 / 小平板 (640px - 768px) */
+@media (max-width: 768px) {
   .lightbox {
-    padding: 0.75rem;
+    padding: 0.5rem;
   }
 
   .lightbox__content {
-    max-width: 95vw;
-    max-height: 95vh;
-    gap: 1rem;
+    max-width: calc(100vw - 80px);
+    padding: 40px 0;
+  }
+
+  .lightbox__img {
+    max-width: calc(100vw - 80px);
+    max-height: calc(100vh - 140px);
+    border-radius: 8px;
   }
 
   .lightbox__close {
     top: 0.75rem;
     right: 0.75rem;
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
   }
 
   .lightbox__close svg {
@@ -456,43 +450,48 @@ defineExpose({ open, close });
     right: 0.5rem;
   }
 
-  .lightbox__image {
-    border-radius: 6px;
+  .lightbox__placeholder {
+    width: 90vw;
+    border-radius: 8px;
+  }
+
+  .lightbox__info {
+    padding: 0 1rem;
   }
 
   .lightbox__caption {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    padding: 0 0.75rem;
+    font-size: 0.9375rem;
   }
 
   .lightbox__counter {
-    bottom: 0.75rem;
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
   }
 }
 
-/* 小手機 (< 480px) */
-@media (max-width: 480px) {
-  .lightbox {
-    padding: 0.5rem;
+/* 手機直向 (< 640px) */
+@media (max-width: 640px) {
+  .lightbox__content {
+    max-width: calc(100vw - 20px);
+    padding: 50px 0 30px;
   }
 
-  .lightbox__content {
-    gap: 0.75rem;
+  .lightbox__img {
+    max-width: calc(100vw - 20px);
+    max-height: calc(100vh - 120px);
+    border-radius: 6px;
   }
 
   .lightbox__close {
     top: 0.5rem;
     right: 0.5rem;
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: rgba(0, 0, 0, 0.5);
   }
 
   .lightbox__close svg {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   .lightbox__nav {
@@ -514,21 +513,59 @@ defineExpose({ open, close });
     right: 0.25rem;
   }
 
+  .lightbox__placeholder {
+    width: 95vw;
+    border-radius: 6px;
+  }
+
+  .lightbox__info {
+    padding: 0 0.75rem;
+    gap: 0.5rem;
+  }
+
   .lightbox__caption {
-    font-size: 0.8125rem;
-    padding: 0 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
   }
 
   .lightbox__counter {
-    bottom: 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* 小手機 (< 480px) */
+@media (max-width: 480px) {
+  .lightbox__content {
+    max-width: 100vw;
+    padding: 45px 0 25px;
+  }
+
+  .lightbox__img {
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 100px);
+  }
+
+  .lightbox__placeholder {
+    width: 98vw;
+  }
+
+  .lightbox__info {
+    padding: 0 0.5rem;
+  }
+
+  .lightbox__caption {
+    font-size: 0.8125rem;
   }
 
   /* 滑動距離減少 */
   .slide-next-enter-from,
-  .slide-next-leave-to,
+  .slide-next-leave-to {
+    transform: translateX(50px);
+  }
+
   .slide-prev-enter-from,
   .slide-prev-leave-to {
-    transform: translateX(50px);
+    transform: translateX(-50px);
   }
 }
 </style>
