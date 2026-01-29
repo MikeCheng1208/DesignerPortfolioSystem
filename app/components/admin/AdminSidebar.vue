@@ -16,6 +16,12 @@ const navigationLinks = computed(() => {
       to: '/admin/dashboard'
     },
     {
+      label: '網站設定',
+      icon: 'i-heroicons-cog-6-tooth',
+      to: '/admin/site-settings',
+      show: hasPermission('profile:write')
+    },
+    {
       label: '個人資料',
       icon: 'i-heroicons-user-circle',
       to: '/admin/profile',

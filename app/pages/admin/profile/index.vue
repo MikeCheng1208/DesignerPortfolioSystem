@@ -54,7 +54,7 @@ const loadProfile = async () => {
     toast.add({
       title: '載入失敗',
       description: '無法載入個人資料',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
   } finally {
@@ -85,7 +85,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請輸入中文姓名',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -94,7 +94,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請輸入英文姓名',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -103,7 +103,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請輸入職稱',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -112,7 +112,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請至少輸入一段個人簡介',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -121,7 +121,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請輸入設計理念',
-      color: 'red'
+      color: 'error'
     })
     return
   }

@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import type { ProjectDetail, ProjectCard } from '~/types/api'
+import { computed, ref, inject } from 'vue'
+import type { ProjectDetail, ProjectCard, SiteSettings } from '~/types/api'
 import Lightbox from '~/components/Lightbox.vue'
 
 const route = useRoute()
 const projectId = route.params.id as string
 const lightboxRef = ref()
+
+// 從 app.vue 注入網站設定
+const siteSettings = inject<Ref<SiteSettings | null>>('siteSettings')
 
 const openLightbox = (index: number) => {
   lightboxRef.value?.open(index)
@@ -37,7 +40,9 @@ const nextProject = computed(() => {
 
 // SEO
 useHead(() => ({
-  title: project.value ? `${project.value.title} - 李松年` : '專案不存在',
+  title: project.value
+    ? `${project.value.title} - ${siteSettings?.value?.siteName || '作品集'}`
+    : '專案不存在',
   meta: [
     { name: 'description', content: project.value?.description || '' }
   ]
@@ -55,7 +60,7 @@ useHead(() => ({
           </svg>
           <span>返回首頁</span>
         </NuxtLink>
-        <NuxtLink to="/" class="nav__logo">李松年</NuxtLink>
+        <NuxtLink to="/" class="nav__logo">{{ siteSettings?.siteName || '首頁' }}</NuxtLink>
       </div>
     </nav>
 

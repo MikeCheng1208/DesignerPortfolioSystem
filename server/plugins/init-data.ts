@@ -91,6 +91,19 @@ interface ProjectDocument {
   updatedAt: Date
 }
 
+interface SiteSettingsDocument {
+  siteName: string
+  siteTitle: string
+  siteDescription: string
+  siteAuthor: string
+  ogTitle?: string
+  ogDescription?: string
+  ogImage?: string
+  isActive: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+
 // ==================== 初始化函數 ====================
 
 /**
@@ -106,9 +119,11 @@ async function initProfile() {
   }
 
   const now = new Date()
+  // 注意：這裡的預設值應與 site_settings 中的 siteName 保持一致
+  // 若需更改名字，請同時更新 site_settings
   const profile: ProfileDocument = {
-    name: '李松年',
-    nameEn: 'Li Songnian',
+    name: '您的名字',
+    nameEn: 'Your Name',
     title: 'UI/UX 設計師',
     bio: [
       '你好！我是一位熱愛設計的 UI/UX 設計師。',
@@ -322,6 +337,37 @@ async function initDemoProject() {
   console.log('  ✓ 示範 Project 建立成功 (未發布)')
 }
 
+/**
+ * 初始化 Site Settings 資料
+ */
+async function initSiteSettings() {
+  const collection = await getCollection<SiteSettingsDocument>('site_settings')
+  const existing = await collection.findOne({ isActive: true })
+
+  if (existing) {
+    console.log('  ✓ Site Settings 資料已存在')
+    return
+  }
+
+  const now = new Date()
+  // 預設網站設定，請在後台「網站設定」頁面更新為您的資訊
+  const settings: SiteSettingsDocument = {
+    siteName: '您的名字',
+    siteTitle: '您的名字 - UI/UX 設計師',
+    siteDescription: '專注於使用者體驗設計與介面創新，透過設計解決問題，創造價值',
+    siteAuthor: '您的名字',
+    ogTitle: '您的名字 - UI/UX 設計師',
+    ogDescription: '專注於使用者體驗設計與介面創新，透過設計解決問題，創造價值',
+    isActive: true,
+    createdAt: now,
+    updatedAt: now
+  }
+
+  await collection.insertOne(settings)
+  await collection.createIndex({ isActive: 1 }).catch(() => {})
+  console.log('  ✓ Site Settings 資料建立成功')
+}
+
 // ==================== 主要 Plugin ====================
 
 export default defineNitroPlugin(async () => {
@@ -332,6 +378,7 @@ export default defineNitroPlugin(async () => {
     await initSkills()
     await initContact()
     await initDemoProject()
+    await initSiteSettings()
 
     console.log('✅ 資料庫初始化完成')
 

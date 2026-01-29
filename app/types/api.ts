@@ -104,3 +104,16 @@ export interface ContactInfo {
   text: string
   links: ContactLink[]
 }
+
+/**
+ * 網站設定
+ */
+export interface SiteSettings {
+  siteName: string
+  siteTitle: string
+  siteDescription: string
+  siteAuthor: string
+  ogTitle?: string
+  ogDescription?: string
+  ogImage?: string
+}

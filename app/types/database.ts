@@ -184,6 +184,37 @@ export interface AdminUserResponse {
   updatedAt: string
 }
 
+// ==================== Site Settings Collection ====================
+
+/**
+ * Site Settings Document (網站設定)
+ * Collection: site_settings
+ * 注意：這個 collection 通常只有一筆資料
+ */
+export interface SiteSettingsDocument extends BaseDocument {
+  siteName: string           // 網站名稱（用於 logo、footer 等）
+  siteTitle: string          // 網站標題（用於 SEO title）
+  siteDescription: string    // 網站描述（用於 SEO description）
+  siteAuthor: string         // 網站作者（用於 meta author）
+  ogTitle?: string           // Open Graph 標題
+  ogDescription?: string     // Open Graph 描述
+  ogImage?: string           // Open Graph 圖片
+  isActive: boolean          // 是否啟用
+}
+
+/**
+ * Site Settings Response (API 回傳格式)
+ */
+export interface SiteSettingsResponse {
+  siteName: string
+  siteTitle: string
+  siteDescription: string
+  siteAuthor: string
+  ogTitle?: string
+  ogDescription?: string
+  ogImage?: string
+}
+
 // ==================== Collection 名稱常數 ====================
 
 export const COLLECTIONS = {
@@ -192,6 +223,7 @@ export const COLLECTIONS = {
   SKILLS: 'skills',
   CONTACT: 'contact',
   ADMIN_USERS: 'admin_users',
+  SITE_SETTINGS: 'site_settings',
 } as const
 
 // ==================== 索引定義 ====================
@@ -280,5 +312,12 @@ export const DATABASE_INDEXES: IndexDefinition[] = [
     collection: COLLECTIONS.ADMIN_USERS,
     key: { isActive: 1, role: 1 },
     options: { name: 'idx_admin_users_active_role' }
+  },
+
+  // Site Settings 索引
+  {
+    collection: COLLECTIONS.SITE_SETTINGS,
+    key: { isActive: 1 },
+    options: { name: 'idx_site_settings_isActive' }
   }
 ]

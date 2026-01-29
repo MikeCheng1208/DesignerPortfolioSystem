@@ -8,6 +8,8 @@ interface UseAdminAPIOptions {
   successMessage?: string
   showErrorToast?: boolean
   errorMessage?: string
+  /** toast 持續時間（毫秒），預設 3000 */
+  toastDuration?: number
 }
 
 export const useAdminAPI = () => {
@@ -22,10 +24,11 @@ export const useAdminAPI = () => {
     apiOptions: UseAdminAPIOptions = {}
   ): Promise<T> => {
     const {
-      showSuccessToast = false,
+      showSuccessToast = true, // 預設顯示成功提示
       successMessage = '操作成功',
       showErrorToast = true,
-      errorMessage = '操作失敗'
+      errorMessage = '操作失敗',
+      toastDuration = 3000
     } = apiOptions
 
     try {
@@ -36,9 +39,11 @@ export const useAdminAPI = () => {
 
       if (showSuccessToast) {
         toast.add({
-          title: successMessage,
-          color: 'green',
-          icon: 'i-heroicons-check-circle'
+          title: '成功',
+          description: successMessage,
+          color: 'success',
+          icon: 'i-heroicons-check-circle',
+          duration: toastDuration
         })
       }
 
@@ -52,8 +57,9 @@ export const useAdminAPI = () => {
         toast.add({
           title: '錯誤',
           description: message,
-          color: 'red',
-          icon: 'i-heroicons-x-circle'
+          color: 'error',
+          icon: 'i-heroicons-x-circle',
+          duration: 5000 // 錯誤訊息顯示久一點
         })
       }
 
@@ -67,39 +73,39 @@ export const useAdminAPI = () => {
   }
 
   /**
-   * GET 請求
+   * GET 請求（預設不顯示成功 toast）
    */
   const get = <T = any>(url: string, options: UseAdminAPIOptions = {}): Promise<T> => {
-    return request<T>(url, { method: 'GET' }, options)
+    return request<T>(url, { method: 'GET' }, { showSuccessToast: false, ...options })
   }
 
   /**
-   * POST 請求
+   * POST 請求（預設顯示成功 toast）
    */
   const post = <T = any>(
     url: string,
     body?: any,
     options: UseAdminAPIOptions = {}
   ): Promise<T> => {
-    return request<T>(url, { method: 'POST', body }, options)
+    return request<T>(url, { method: 'POST', body }, { successMessage: '新增成功', ...options })
   }
 
   /**
-   * PUT 請求
+   * PUT 請求（預設顯示成功 toast）
    */
   const put = <T = any>(
     url: string,
     body?: any,
     options: UseAdminAPIOptions = {}
   ): Promise<T> => {
-    return request<T>(url, { method: 'PUT', body }, options)
+    return request<T>(url, { method: 'PUT', body }, { successMessage: '儲存成功', ...options })
   }
 
   /**
-   * DELETE 請求
+   * DELETE 請求（預設顯示成功 toast）
    */
   const del = <T = any>(url: string, options: UseAdminAPIOptions = {}): Promise<T> => {
-    return request<T>(url, { method: 'DELETE' }, options)
+    return request<T>(url, { method: 'DELETE' }, { successMessage: '刪除成功', ...options })
   }
 
   return {

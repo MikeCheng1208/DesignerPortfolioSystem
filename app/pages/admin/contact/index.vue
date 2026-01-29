@@ -60,7 +60,7 @@ const loadContact = async () => {
     toast.add({
       title: '載入失敗',
       description: '無法載入聯絡資訊',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
   } finally {
@@ -134,7 +134,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請輸入說明文字',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -143,7 +143,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請至少新增一個連結',
-      color: 'red'
+      color: 'error'
     })
     return
   }
@@ -155,7 +155,7 @@ const handleSubmit = async () => {
       toast.add({
         title: '驗證失敗',
         description: `連結 ${i + 1} 缺少必填欄位`,
-        color: 'red'
+        color: 'error'
       })
       return
     }

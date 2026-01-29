@@ -1,40 +1,46 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import AdminSidebar from './AdminSidebar.vue'
-import AdminHeader from './AdminHeader.vue'
+import { ref, watch, computed } from "vue";
+import AdminSidebar from "./AdminSidebar.vue";
+import AdminHeader from "./AdminHeader.vue";
 
 interface Props {
-  pageTitle?: string
-  pageDescription?: string
+  pageTitle?: string;
+  pageDescription?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  pageTitle: '儀表板',
-  pageDescription: ''
-})
+  pageTitle: "儀表板",
+  pageDescription: "",
+});
 
 // 設定瀏覽器標題
-const browserTitle = computed(() => `後台 - ${props.pageTitle} | 李松年`)
+const browserTitle = computed(() => `後台 - ${props.pageTitle}`);
 
 useHead({
-  title: browserTitle.value
-})
+  title: browserTitle.value,
+});
 
 // 監聽標題變化
-watch(() => props.pageTitle, () => {
-  useHead({
-    title: `後台 - ${props.pageTitle} | 李松年`
-  })
-})
+watch(
+  () => props.pageTitle,
+  () => {
+    useHead({
+      title: `後台 - ${props.pageTitle}`,
+    });
+  },
+);
 
 // 行動版側邊欄狀態
-const showMobileSidebar = ref(false)
+const showMobileSidebar = ref(false);
 
 // 監聽路由變化，關閉行動版側邊欄
-const route = useRoute()
-watch(() => route.path, () => {
-  showMobileSidebar.value = false
-})
+const route = useRoute();
+watch(
+  () => route.path,
+  () => {
+    showMobileSidebar.value = false;
+  },
+);
 </script>
 
 <template>
@@ -46,7 +52,10 @@ watch(() => route.path, () => {
     <ClientOnly>
       <template #default>
         <transition name="slide">
-          <AdminSidebar v-if="showMobileSidebar" class="sidebar mobile-sidebar" />
+          <AdminSidebar
+            v-if="showMobileSidebar"
+            class="sidebar mobile-sidebar"
+          />
         </transition>
 
         <!-- Overlay -->
@@ -85,6 +94,7 @@ watch(() => route.path, () => {
         <slot />
       </main>
     </div>
+
   </div>
 </template>
 

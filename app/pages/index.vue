@@ -1,35 +1,47 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import type { Profile, ProjectCard, SkillCategory, ContactInfo } from '~/types/api'
+import { ref, computed, onMounted, onUnmounted, inject } from "vue";
+import type {
+  Profile,
+  ProjectCard,
+  SkillCategory,
+  ContactInfo,
+  SiteSettings,
+} from "~/types/api";
 
-const scrolled = ref(false)
+const scrolled = ref(false);
+
+// 從 app.vue 注入網站設定
+const siteSettings = inject<Ref<SiteSettings | null>>('siteSettings');
 
 // 使用 useFetch 從 API 獲取資料
-const { data: profile } = await useFetch<Profile>('/api/profile')
-const { data: projects } = await useFetch<ProjectCard[]>('/api/projects')
-const { data: skills } = await useFetch<SkillCategory[]>('/api/skills')
-const { data: contact } = await useFetch<ContactInfo>('/api/contact')
+const { data: profile } = await useFetch<Profile>("/api/profile");
+const { data: projects } = await useFetch<ProjectCard[]>("/api/projects");
+const { data: skills } = await useFetch<SkillCategory[]>("/api/skills");
+const { data: contact } = await useFetch<ContactInfo>("/api/contact");
 
 // 處理標語的換行
 const heroTitleLines = computed(() =>
-  (profile.value?.heroTitle || '創造有意義的\n數位體驗').split('\n')
-)
+  (profile.value?.heroTitle || "創造有意義的\n數位體驗").split("\n"),
+);
 
 const heroSubtitleLines = computed(() =>
-  (profile.value?.heroSubtitle || '專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值').split('\n')
-)
+  (
+    profile.value?.heroSubtitle ||
+    "專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值"
+  ).split("\n"),
+);
 
 const handleScroll = () => {
-  scrolled.value = window.scrollY > 50
-}
+  scrolled.value = window.scrollY > 50;
+};
 
 onMounted(() => {
-  window.addEventListener('scroll', handleScroll)
-})
+  window.addEventListener("scroll", handleScroll);
+});
 
 onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll)
-})
+  window.removeEventListener("scroll", handleScroll);
+});
 </script>
 
 <template>
@@ -37,7 +49,7 @@ onUnmounted(() => {
     <!-- Navigation -->
     <nav class="nav" :class="{ 'nav--scrolled': scrolled }">
       <div class="nav__container">
-        <a href="#" class="nav__logo">{{ profile?.name || '李松年' }}</a>
+        <a href="#" class="nav__logo">{{ profile?.name || "No Name" }}</a>
         <div class="nav__links">
           <a href="#work" class="nav__link">作品</a>
           <a href="#about" class="nav__link">關於</a>
@@ -49,7 +61,7 @@ onUnmounted(() => {
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero__container">
-        <div class="hero__label">{{ profile?.title || 'UI/UX Designer' }}</div>
+        <div class="hero__label">{{ profile?.title || "UI/UX Designer" }}</div>
         <h1 class="hero__title">
           <span
             v-for="(line, index) in heroTitleLines"
@@ -68,7 +80,13 @@ onUnmounted(() => {
         <a href="#work" class="hero__cta">
           <span>探索作品</span>
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            <path d="M10 4V16M10 16L16 10M10 16L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path
+              d="M10 4V16M10 16L16 10M10 16L4 10"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </a>
       </div>
@@ -94,7 +112,10 @@ onUnmounted(() => {
             :style="{ animationDelay: `${index * 100}ms` }"
           >
             <div class="project-card__image">
-              <div class="project-card__image-inner" :style="{ background: project.color }">
+              <div
+                class="project-card__image-inner"
+                :style="{ background: project.color }"
+              >
                 <img
                   v-if="project.coverImage"
                   :src="project.coverImage"
@@ -102,18 +123,24 @@ onUnmounted(() => {
                   class="project-card__cover"
                   loading="lazy"
                 />
-                <span v-else class="project-card__number">{{ String(index + 1).padStart(2, '0') }}</span>
+                <span v-else class="project-card__number">{{
+                  String(index + 1).padStart(2, "0")
+                }}</span>
               </div>
             </div>
             <div class="project-card__content">
               <div class="project-card__meta">
-                <span class="project-card__category">{{ project.category }}</span>
+                <span class="project-card__category">{{
+                  project.category
+                }}</span>
                 <span class="project-card__year">{{ project.year }}</span>
               </div>
               <h3 class="project-card__title">{{ project.title }}</h3>
               <p class="project-card__description">{{ project.description }}</p>
               <div class="project-card__tags">
-                <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
+                <span v-for="tag in project.tags" :key="tag" class="tag">{{
+                  tag
+                }}</span>
               </div>
             </div>
           </NuxtLink>
@@ -135,12 +162,26 @@ onUnmounted(() => {
             <div class="profile-photo__image">
               <div class="profile-photo__placeholder">
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/>
-                  <path d="M6 21C6 17.134 8.68629 14 12 14C15.3137 14 18 17.134 18 21" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle
+                    cx="12"
+                    cy="8"
+                    r="4"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                  />
+                  <path
+                    d="M6 21C6 17.134 8.68629 14 12 14C15.3137 14 18 17.134 18 21"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </div>
             </div>
-            <p class="profile-photo__caption">{{ profile?.name || '李松年' }} {{ profile?.nameEn || 'Lee Song-Nian' }}</p>
+            <p class="profile-photo__caption">
+              {{ profile?.name || siteSettings?.siteName || "" }}
+              {{ profile?.nameEn || "" }}
+            </p>
           </div>
         </div>
 
@@ -188,7 +229,7 @@ onUnmounted(() => {
 
         <div class="contact__content">
           <p class="contact__text">
-            {{ contact?.text || '對於合作機會或設計諮詢，歡迎隨時與我聯繫。' }}
+            {{ contact?.text || "對於合作機會或設計諮詢，歡迎隨時與我聯繫。" }}
           </p>
 
           <div class="contact__links">
@@ -210,7 +251,9 @@ onUnmounted(() => {
     <!-- Footer -->
     <footer class="footer">
       <div class="footer__container">
-        <p class="footer__text">© 2026 {{ profile?.name || '李松年' }}. All rights reserved.</p>
+        <p class="footer__text">
+          © {{ new Date().getFullYear() }} {{ profile?.name || siteSettings?.siteName || "" }}. All rights reserved.
+        </p>
         <p class="footer__text">Designed & Built with care</p>
       </div>
     </footer>
@@ -268,7 +311,7 @@ onUnmounted(() => {
 }
 
 .nav__link::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -4px;
   left: 0;
@@ -377,9 +420,16 @@ onUnmounted(() => {
 .hero__scroll-indicator {
   width: 1px;
   height: 60px;
-  background: linear-gradient(to bottom, transparent, var(--color-text-muted), transparent);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--color-text-muted),
+    transparent
+  );
   opacity: 0;
-  animation: fadeIn 0.8s var(--ease-out-expo) 1.1s forwards, scrollIndicator 2s ease-in-out infinite;
+  animation:
+    fadeIn 0.8s var(--ease-out-expo) 1.1s forwards,
+    scrollIndicator 2s ease-in-out infinite;
 }
 
 /* Work Section */
@@ -640,7 +690,7 @@ onUnmounted(() => {
 }
 
 .skill-item::before {
-  content: '';
+  content: "";
   position: absolute;
   left: 0;
   top: 50%;
@@ -748,7 +798,8 @@ onUnmounted(() => {
 }
 
 @keyframes scrollIndicator {
-  0%, 100% {
+  0%,
+  100% {
     transform: scaleY(1);
   }
   50% {

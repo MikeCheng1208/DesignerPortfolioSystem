@@ -27,19 +27,17 @@ export default defineNuxtConfig({
   ssr: true,
 
   // App 配置
+  // 注意：這裡的值是 fallback，真正的 SEO 值會在 app.vue 從 site_settings 動態載入
   app: {
     head: {
-      title: '李松年 - UI/UX 設計師',
+      title: '個人作品集',
       htmlAttrs: {
         lang: 'zh-TW'
       },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'description', content: '李松年的作品集 - 專注於使用者體驗設計與介面創新，透過設計解決問題，創造價值' },
-        { name: 'author', content: '李松年' },
-        { property: 'og:title', content: '李松年 - UI/UX 設計師' },
-        { property: 'og:description', content: '專注於使用者體驗設計與介面創新，透過設計解決問題，創造價值' },
+        { name: 'description', content: '歡迎來到我的個人作品集網站' },
         { property: 'og:type', content: 'website' },
         { name: 'theme-color', content: '#fafaf9' }
       ],

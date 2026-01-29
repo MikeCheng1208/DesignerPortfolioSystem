@@ -82,7 +82,7 @@ const saveSlogan = async () => {
     toast.add({
       title: '儲存失敗',
       description: '無法儲存首頁標語',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
   } finally {

@@ -1,10 +1,37 @@
 <script setup lang="ts">
-import './app.css'
+import "./app.css";
+import type { SiteSettings } from "~/types/api";
+
+// 載入網站設定
+const { data: siteSettings } =
+  await useFetch<SiteSettings>("/api/site-settings");
+
+// 提供給子元件使用
+provide("siteSettings", siteSettings);
+
+// 設定全域 SEO
+useSeoMeta({
+  title: () => siteSettings.value?.siteTitle || "個人作品集",
+  description: () => siteSettings.value?.siteDescription || "",
+  author: () => siteSettings.value?.siteAuthor || "",
+  ogTitle: () =>
+    siteSettings.value?.ogTitle ||
+    siteSettings.value?.siteTitle ||
+    "個人作品集",
+  ogDescription: () =>
+    siteSettings.value?.ogDescription ||
+    siteSettings.value?.siteDescription ||
+    "",
+  ogImage: () => siteSettings.value?.ogImage || undefined,
+});
 </script>
 
 <template>
   <div id="app">
     <NuxtPage />
+
+    <!-- 全域 Toast 通知 -->
+    <AppToaster />
   </div>
 </template>
 
@@ -16,8 +43,8 @@ import './app.css'
   --color-accent: #1e40af;
   --color-border: #e5e5e5;
 
-  --font-display: 'Instrument Serif', Georgia, serif;
-  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-circ: cubic-bezier(0.85, 0, 0.15, 1);

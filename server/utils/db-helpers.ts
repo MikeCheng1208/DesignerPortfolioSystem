@@ -10,6 +10,7 @@ import type {
   ProjectDocument,
   SkillCategoryDocument,
   ContactDocument,
+  SiteSettingsDocument,
   COLLECTIONS
 } from '../../app/types/database'
 
@@ -232,6 +233,25 @@ export async function getActiveContact() {
     text: contactData.text,
     links: cleanLinks
   }
+}
+
+// ==================== Site Settings 相關 ====================
+
+/**
+ * 獲取啟用的網站設定
+ */
+export async function getActiveSiteSettings() {
+  const collection = await getCollection<SiteSettingsDocument>('site_settings')
+  const settings = await collection.findOne({ isActive: true })
+
+  if (!settings) {
+    return null
+  }
+
+  // 移除 MongoDB 的 _id 和內部欄位
+  const { _id, isActive, createdAt, updatedAt, ...settingsData } = settings
+
+  return settingsData
 }
 
 // ==================== 通用工具函數 ====================

@@ -13,6 +13,6 @@
 ```vue
 <!-- 將佔位符替換為真實照片 -->
 <div class="profile-photo__image">
-  <img src="/profile.jpg" alt="李松年" />
+  <img src="/profile.jpg" alt="您的名字" />
 </div>
 ```

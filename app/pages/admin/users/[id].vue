@@ -73,7 +73,7 @@ const loadUser = async () => {
     toast.add({
       title: '載入失敗',
       description: '無法載入使用者資料',
-      color: 'red'
+      color: 'error'
     })
     router.push('/admin/users')
   } finally {
@@ -131,7 +131,7 @@ const resetPassword = async () => {
     toast.add({
       title: '驗證失敗',
       description: '密碼至少需要 8 個字元',
-      color: 'red'
+      color: 'error'
     })
     return
   }

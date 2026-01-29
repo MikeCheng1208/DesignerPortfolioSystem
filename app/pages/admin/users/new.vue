@@ -85,7 +85,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請填寫所有必填欄位',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
     return
@@ -97,7 +97,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '請輸入有效的 Email 地址',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
     return
@@ -108,7 +108,7 @@ const handleSubmit = async () => {
     toast.add({
       title: '驗證失敗',
       description: '密碼至少需要 8 個字元',
-      color: 'red',
+      color: 'error',
       icon: 'i-heroicons-x-circle'
     })
     return

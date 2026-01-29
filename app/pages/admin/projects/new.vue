@@ -95,7 +95,7 @@ const handleSubmit = async () => {
       toast.add({
         title: '驗證失敗',
         description: `請填寫「${label}」`,
-        color: 'red'
+        color: 'error'
       })
       return
     }

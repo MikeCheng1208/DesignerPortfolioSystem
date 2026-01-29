@@ -1,62 +1,62 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue"
-import { useAdminAuth } from "~/composables/admin/useAdminAuth"
-import { useErrorHandler } from "~/composables/admin/useErrorHandler"
+import { reactive, ref } from "vue";
+import { useAdminAuth } from "~/composables/admin/useAdminAuth";
+import { useErrorHandler } from "~/composables/admin/useErrorHandler";
 
 definePageMeta({
   layout: false,
   middleware: "admin-guest",
-})
+});
 
 // 設定瀏覽器標題
 useHead({
-  title: '後台登入 | 李松年'
-})
+  title: "後台登入",
+});
 
-const { login, isLoading } = useAdminAuth()
-const { handleError } = useErrorHandler()
-const router = useRouter()
-const toast = useToast()
+const { login, isLoading } = useAdminAuth();
+const { handleError } = useErrorHandler();
+const router = useRouter();
+const toast = useToast();
 
 // 表單狀態
 const formState = reactive({
   username: "",
   password: "",
-})
+});
 
-const errorMessage = ref("")
-const showPassword = ref(false)
+const errorMessage = ref("");
+const showPassword = ref(false);
 
 /**
  * 處理登入
  */
 const handleLogin = async () => {
-  errorMessage.value = ""
+  errorMessage.value = "";
 
   try {
     const response = await login({
       username: formState.username,
       password: formState.password,
-    })
+    });
 
     // 登入成功
     toast.add({
       title: "登入成功",
       description: `歡迎回來，${response.user.displayName}`,
-      color: "green",
+      color: "success",
       icon: "i-heroicons-check-circle",
-    })
+    });
 
     // 導向儀表板
-    await router.push("/admin/dashboard")
+    await router.push("/admin/dashboard");
   } catch (error: any) {
     const { message } = handleError(error, {
       showToast: false,
       redirectOnAuth: false,
-    })
-    errorMessage.value = message
+    });
+    errorMessage.value = message;
   }
-}
+};
 </script>
 
 <template>
@@ -66,10 +66,32 @@ const handleLogin = async () => {
       <!-- Brand -->
       <div class="login-brand">
         <div class="brand-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M12 2L2 7L12 12L22 7L12 2Z"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 17L12 22L22 17"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M2 12L12 17L22 12"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
           </svg>
         </div>
         <h1 class="brand-title">作品集管理後台</h1>
@@ -86,9 +108,7 @@ const handleLogin = async () => {
         <form @submit.prevent="handleLogin" class="login-form">
           <!-- Username Field -->
           <div class="form-field">
-            <label for="username" class="field-label">
-              帳號
-            </label>
+            <label for="username" class="field-label"> 帳號 </label>
             <div class="input-wrapper">
               <span class="input-icon">
                 <UIcon name="i-heroicons-user" />
@@ -107,9 +127,7 @@ const handleLogin = async () => {
 
           <!-- Password Field -->
           <div class="form-field">
-            <label for="password" class="field-label">
-              密碼
-            </label>
+            <label for="password" class="field-label"> 密碼 </label>
             <div class="input-wrapper">
               <span class="input-icon">
                 <UIcon name="i-heroicons-lock-closed" />
@@ -130,7 +148,9 @@ const handleLogin = async () => {
                 :disabled="isLoading"
               >
                 <UIcon
-                  :name="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+                  :name="
+                    showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'
+                  "
                 />
               </button>
             </div>
@@ -148,9 +168,13 @@ const handleLogin = async () => {
             class="submit-button"
             :disabled="isLoading || !formState.username || !formState.password"
           >
-            <UIcon v-if="isLoading" name="i-heroicons-arrow-path" class="animate-spin" />
+            <UIcon
+              v-if="isLoading"
+              name="i-heroicons-arrow-path"
+              class="animate-spin"
+            />
             <UIcon v-else name="i-heroicons-arrow-right-on-rectangle" />
-            <span>{{ isLoading ? '登入中...' : '登入' }}</span>
+            <span>{{ isLoading ? "登入中..." : "登入" }}</span>
           </button>
         </form>
 
@@ -182,7 +206,7 @@ const handleLogin = async () => {
 }
 
 .login-page::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -413,9 +437,23 @@ const handleLogin = async () => {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-  20%, 40%, 60%, 80% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: translateX(-4px);
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 /* Submit Button */

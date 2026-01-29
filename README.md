@@ -1,127 +1,139 @@
-# 李松年 - UI/UX 設計師作品集
+# Designer Portfolio System
 
-這是一個使用 Nuxt 4 建立的個人作品集網站,展現極簡優雅的設計風格。
+一個專為設計師打造的作品集網站系統。只需簡單部署到 Zeabur，即可擁有一個專業、美觀的個人作品集網站。
 
-## 設計特色
+## 特色功能
 
-- **極簡美學**: 大膽的留白和精準的排版
-- **流暢動畫**: 細膩的微互動效果,提升使用者體驗
-- **完整 RWD**: 7 個響應式斷點,完美適配桌機、平板、手機
-- **SSR 支援**: 支援伺服器端渲染,優化 SEO 和效能
-- **靜態生成**: 可生成靜態網站進行部署
+### 前台展示
+- 極簡優雅的設計風格
+- 流暢的動畫與微互動效果
+- 完整響應式設計（桌機、平板、手機）
+- SEO 優化（SSR 伺服器端渲染）
+- 作品集展示與詳情頁
+- 個人簡介與技能展示
+- 聯絡資訊整合
+
+### 後台管理
+- 直覺的管理介面
+- 作品 CRUD（新增、編輯、刪除、發布）
+- 個人資料管理
+- 技能分類管理
+- 聯絡資訊管理
+- 使用者權限管理
+- JWT 安全認證
 
 ## 技術棧
 
-- **框架**: Nuxt 4
-- **UI 框架**: Vue 3
-- **語言**: TypeScript
-- **樣式**: CSS (Scoped Styles)
+| 類別 | 技術 |
+|------|------|
+| 框架 | Nuxt 4 (Vue 3 + TypeScript) |
+| UI | Tailwind CSS 4 + @nuxt/ui |
+| 資料庫 | MongoDB |
+| 認證 | JWT + httpOnly Cookie |
+| 部署 | Zeabur |
 
 ## 快速開始
 
-### 安裝依賴
+### 一鍵部署到 Zeabur
 
-```bash
-npm install
-```
+[![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates)
 
-### 開發伺服器
+詳細部署教學請參考：[Zeabur 部署指南](./docs/zeabur-deploy.md)
 
-啟動開發伺服器於 http://localhost:3000
+### 本地開發
 
-```bash
-npm run dev
-```
+1. **複製專案**
+   ```bash
+   git clone https://github.com/your-username/designer-portfolio.git
+   cd designer-portfolio
+   ```
 
-### 建置生產版本
+2. **安裝依賴**
+   ```bash
+   npm install
+   ```
 
-```bash
-# SSR 建置
-npm run build
+3. **設定環境變數**
+   ```bash
+   cp .env.example .env
+   ```
+   編輯 `.env` 檔案，填入你的 MongoDB 連線資訊和 JWT 密鑰。
 
-# 靜態網站生成
-npm run generate
-```
+4. **啟動開發伺服器**
+   ```bash
+   npm run dev
+   ```
 
-### 預覽生產版本
+   開啟 http://localhost:3000 查看前台
+   開啟 http://localhost:3000/admin 進入後台
 
-```bash
-npm run preview
-```
+### 預設管理員帳號
+
+首次啟動時，系統會自動建立預設管理員帳號：
+
+| 帳號 | 密碼 |
+|------|------|
+| admin | Admin123456 |
+
+> 請在首次登入後立即修改密碼！
+
+## 環境變數
+
+| 變數名稱 | 必填 | 說明 | 範例 |
+|---------|------|------|------|
+| `MONGO_URI` | 是 | MongoDB 連接字串 | `mongodb+srv://user:pass@cluster.mongodb.net/dbname` |
+| `JWT_SECRET` | 是 | JWT 加密密鑰（至少 32 字元） | `your-super-secret-key-at-least-32-chars` |
+| `COOKIE_SECURE` | 否 | Cookie 安全設定 | `true`（生產環境）/ `false`（本地開發） |
+
+詳細環境變數設定請參考：[環境變數設定指南](./docs/zeabur-deploy.md#環境變數設定)
 
 ## 專案結構
 
 ```
-PersonalResume/
 ├── app/
-│   ├── app.vue          # 應用程式根組件
-│   └── pages/
-│       └── index.vue    # 首頁
-├── public/              # 靜態資源
-├── nuxt.config.ts       # Nuxt 配置
-└── package.json         # 專案依賴
+│   ├── components/       # Vue 元件
+│   │   └── admin/        # 後台專用元件
+│   ├── composables/      # 組合式函數
+│   │   └── admin/        # 後台專用 composables
+│   ├── pages/            # 頁面路由
+│   │   ├── admin/        # 後台頁面
+│   │   └── work/         # 作品詳情頁
+│   └── types/            # TypeScript 型別定義
+├── server/
+│   ├── api/              # API 路由
+│   │   ├── admin/        # 後台 API（需認證）
+│   │   └── public/       # 公開 API
+│   ├── middleware/       # 伺服器中介軟體
+│   ├── plugins/          # Nitro 插件
+│   └── utils/            # 工具函數
+├── docs/                 # 文件
+└── public/               # 靜態資源
 ```
 
-## 自訂內容
+## 常用指令
 
-### 修改個人資訊
+```bash
+# 開發
+npm run dev              # 啟動開發伺服器
 
-編輯 `app/pages/index.vue` 中的資料:
+# 建置
+npm run build            # 建置生產版本（SSR）
+npm run generate         # 生成靜態網站
 
-```typescript
-const projects = [
-  // 修改專案資訊
-]
+# 資料庫
+npm run seed:admin       # 建立/更新管理員帳號（互動式）
+npm run reset-password   # 重置 admin 密碼為預設值
 ```
 
-### 添加個人照片
+## 文件
 
-1. 將照片放入 `public/` 資料夾(建議命名為 `profile.jpg`)
-2. 編輯 `app/pages/index.vue`,將佔位符替換為:
-   ```vue
-   <div class="profile-photo__image">
-     <img src="/profile.jpg" alt="李松年" />
-   </div>
-   ```
-
-詳細說明請參考: [HOW-TO-ADD-PHOTO.md](./HOW-TO-ADD-PHOTO.md)
-
-### 調整設計風格
-
-全域樣式變數定義在 `app/app.vue`:
-
-```css
-:root {
-  --color-bg: #fafaf9;
-  --color-text: #1a1a1a;
-  --color-accent: #1e40af;
-  /* ... */
-}
-```
-
-## 部署
-
-### 靜態網站部署
-
-1. 生成靜態檔案:
-   ```bash
-   npm run generate
-   ```
-
-2. 部署 `.output/public` 目錄到以下平台:
-   - Netlify
-   - Vercel
-   - GitHub Pages
-   - Cloudflare Pages
-
-### SSR 部署
-
-使用 `npm run build` 建置後,可部署到:
-- Vercel
-- Netlify
-- Railway
-- 任何支援 Node.js 的平台
+- [Zeabur 部署指南](./docs/zeabur-deploy.md) - 完整的部署教學
+- [CLAUDE.md](./CLAUDE.md) - 開發者技術文件
 
 ## 授權
 
-© 2026 李松年. All rights reserved.
+MIT License
+
+---
+
+Made with Vue.js + Nuxt

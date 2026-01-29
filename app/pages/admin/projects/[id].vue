@@ -98,7 +98,7 @@ const loadProject = async () => {
     toast.add({
       title: '載入失敗',
       description: '無法載入作品資料',
-      color: 'red'
+      color: 'error'
     })
     router.push('/admin/projects')
   } finally {
