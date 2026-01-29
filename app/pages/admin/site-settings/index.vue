@@ -21,6 +21,7 @@ if (!hasPermission("profile:write")) {
 // 狀態管理
 const isLoading = ref(false);
 const isSaving = ref(false);
+const isSavingSlogan = ref(false);
 const settings = ref<any>(null);
 
 // 表單狀態
@@ -32,6 +33,12 @@ const formState = reactive({
   ogTitle: "",
   ogDescription: "",
   ogImage: "",
+});
+
+// 標語表單
+const sloganForm = reactive({
+  heroTitle: "",
+  heroSubtitle: "",
 });
 
 /**
@@ -140,9 +147,60 @@ const autoFillOg = () => {
   }
 };
 
+/**
+ * 載入首頁標語
+ */
+const loadSlogan = async () => {
+  try {
+    const response = await api.get("/api/admin/profile");
+    sloganForm.heroTitle =
+      response.profile.heroTitle || "創造有意義的\n數位體驗";
+    sloganForm.heroSubtitle =
+      response.profile.heroSubtitle ||
+      "專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值";
+  } catch (error) {
+    console.error("載入首頁標語失敗:", error);
+    // 設定預設值
+    sloganForm.heroTitle = "創造有意義的\n數位體驗";
+    sloganForm.heroSubtitle =
+      "專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值";
+  }
+};
+
+/**
+ * 儲存首頁標語
+ */
+const saveSlogan = async () => {
+  isSavingSlogan.value = true;
+  try {
+    await api.put(
+      "/api/admin/profile",
+      {
+        heroTitle: sloganForm.heroTitle,
+        heroSubtitle: sloganForm.heroSubtitle,
+      },
+      {
+        showSuccessToast: true,
+        successMessage: "首頁標語已更新",
+      }
+    );
+  } catch (error) {
+    console.error("儲存首頁標語失敗:", error);
+    toast.add({
+      title: "儲存失敗",
+      description: "無法儲存首頁標語",
+      color: "error",
+      icon: "i-heroicons-x-circle",
+    });
+  } finally {
+    isSavingSlogan.value = false;
+  }
+};
+
 // 初始載入
 onMounted(() => {
   loadSettings();
+  loadSlogan();
 });
 </script>
 
@@ -234,6 +292,73 @@ onMounted(() => {
               <p class="field-hint">
                 用於 SEO，建議 150-160 字元內，會顯示在 Google 搜尋結果
               </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 首頁標語設定 -->
+        <div class="form-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">首頁標語</h3>
+              <p class="section-description">
+                設定首頁的主標題和副標題，這些內容會顯示在首頁的醒目位置
+              </p>
+            </div>
+          </div>
+
+          <div class="slogan-form">
+            <div class="form-grid">
+              <!-- 主標語 -->
+              <div class="form-field full-width">
+                <label class="field-label">
+                  主標語
+                  <span class="required">*</span>
+                </label>
+                <textarea
+                  v-model="sloganForm.heroTitle"
+                  class="field-textarea"
+                  rows="3"
+                  placeholder="例如：&#10;創造有意義的&#10;數位體驗"
+                  :disabled="isSavingSlogan"
+                ></textarea>
+                <p class="field-hint">
+                  這段文字會顯示在首頁的醒目位置，每一行會單獨呈現並有動畫效果
+                </p>
+              </div>
+
+              <!-- 副標語 -->
+              <div class="form-field full-width">
+                <label class="field-label">
+                  副標語
+                  <span class="required">*</span>
+                </label>
+                <textarea
+                  v-model="sloganForm.heroSubtitle"
+                  class="field-textarea"
+                  rows="3"
+                  placeholder="例如：&#10;專注於使用者體驗設計與介面創新，&#10;透過設計解決問題，創造價值"
+                  :disabled="isSavingSlogan"
+                ></textarea>
+                <p class="field-hint">補充說明主標語的詳細內容，支援多行顯示</p>
+              </div>
+            </div>
+
+            <div class="slogan-actions">
+              <button
+                type="button"
+                class="button button-primary"
+                :disabled="isSavingSlogan"
+                @click="saveSlogan"
+              >
+                <UIcon
+                  v-if="isSavingSlogan"
+                  name="i-heroicons-arrow-path"
+                  class="animate-spin"
+                />
+                <UIcon v-else name="i-heroicons-check" />
+                {{ isSavingSlogan ? "儲存中..." : "儲存標語" }}
+              </button>
             </div>
           </div>
         </div>
@@ -597,6 +722,19 @@ onMounted(() => {
   font-size: 0.8125rem;
   color: #64748b;
   margin: 0;
+}
+
+/* Slogan Form */
+.slogan-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.slogan-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
 }
 
 /* OG Preview */

@@ -160,7 +160,13 @@ onUnmounted(() => {
         <div class="about__profile">
           <div class="profile-photo">
             <div class="profile-photo__image">
-              <div class="profile-photo__placeholder">
+              <img
+                v-if="profile?.photo"
+                :src="profile.photo"
+                :alt="profile?.name || 'Profile Photo'"
+                class="profile-photo__img"
+              />
+              <div v-else class="profile-photo__placeholder">
                 <svg width="80" height="80" viewBox="0 0 24 24" fill="none">
                   <circle
                     cx="12"

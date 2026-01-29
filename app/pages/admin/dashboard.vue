@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAdminAuth } from '~/composables/admin/useAdminAuth'
 import { useAdminAPI } from '~/composables/admin/useAdminAPI'
 import AdminLayout from '~/components/admin/AdminLayout.vue'
@@ -10,21 +10,13 @@ definePageMeta({
 
 const { user } = useAdminAuth()
 const api = useAdminAPI()
-const toast = useToast()
 
 // 狀態管理
 const isLoading = ref(false)
-const isSavingSlogan = ref(false)
 const stats = ref({
   projects: { total: 0, published: 0, draft: 0 },
   skills: { total: 0, visible: 0, hidden: 0 },
   users: { total: 0, active: 0, inactive: 0 }
-})
-
-// 標語表單
-const sloganForm = reactive({
-  heroTitle: '',
-  heroSubtitle: ''
 })
 
 /**
@@ -48,51 +40,8 @@ const loadDashboardStats = async () => {
   }
 }
 
-/**
- * 載入首頁標語
- */
-const loadSlogan = async () => {
-  try {
-    const response = await api.get('/api/admin/profile')
-    sloganForm.heroTitle = response.profile.heroTitle || '創造有意義的\n數位體驗'
-    sloganForm.heroSubtitle = response.profile.heroSubtitle || '專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值'
-  } catch (error) {
-    console.error('載入首頁標語失敗:', error)
-    // 設定預設值
-    sloganForm.heroTitle = '創造有意義的\n數位體驗'
-    sloganForm.heroSubtitle = '專注於使用者體驗設計與介面創新，\n透過設計解決問題，創造價值'
-  }
-}
-
-/**
- * 儲存首頁標語
- */
-const saveSlogan = async () => {
-  isSavingSlogan.value = true
-  try {
-    await api.put('/api/admin/profile', {
-      heroTitle: sloganForm.heroTitle,
-      heroSubtitle: sloganForm.heroSubtitle
-    }, {
-      showSuccessToast: true,
-      successMessage: '首頁標語已更新'
-    })
-  } catch (error) {
-    console.error('儲存首頁標語失敗:', error)
-    toast.add({
-      title: '儲存失敗',
-      description: '無法儲存首頁標語',
-      color: 'error',
-      icon: 'i-heroicons-x-circle'
-    })
-  } finally {
-    isSavingSlogan.value = false
-  }
-}
-
 onMounted(() => {
   loadDashboardStats()
-  loadSlogan()
 })
 
 // 快捷操作
@@ -148,55 +97,6 @@ const quickActions = [
             weekday: 'long'
           }) }}
         </div>
-      </div>
-
-      <!-- Hero Slogan Edit -->
-      <div class="slogan-section">
-        <div class="section-header">
-          <h3>首頁標語</h3>
-          <p>設定首頁的主標題和副標題</p>
-        </div>
-
-        <form @submit.prevent="saveSlogan" class="slogan-form">
-          <div class="form-group">
-            <label class="form-label">
-              主標語 <span class="required">*</span>
-            </label>
-            <textarea
-              v-model="sloganForm.heroTitle"
-              rows="3"
-              class="form-textarea"
-              placeholder="例如:&#10;創造有意義的&#10;數位體驗"
-              :disabled="isSavingSlogan"
-            ></textarea>
-            <p class="form-hint">這段文字會顯示在首頁的醒目位置，每一行會單獨呈現並有動畫效果</p>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">
-              副標語 <span class="required">*</span>
-            </label>
-            <textarea
-              v-model="sloganForm.heroSubtitle"
-              rows="3"
-              class="form-textarea"
-              placeholder="例如:&#10;專注於使用者體驗設計與介面創新，&#10;透過設計解決問題，創造價值"
-              :disabled="isSavingSlogan"
-            ></textarea>
-            <p class="form-hint">補充說明主標語的詳細內容，支援多行顯示</p>
-          </div>
-
-          <div class="form-actions">
-            <button
-              type="submit"
-              class="save-button"
-              :disabled="isSavingSlogan"
-            >
-              <UIcon name="i-heroicons-check" />
-              {{ isSavingSlogan ? '儲存中...' : '儲存變更' }}
-            </button>
-          </div>
-        </form>
       </div>
 
       <!-- Stats Grid -->
@@ -354,113 +254,6 @@ const quickActions = [
   font-size: 0.9rem;
   opacity: 0.85;
   text-align: right;
-}
-
-/* Slogan Section */
-.slogan-section {
-  background: white;
-  border-radius: 20px;
-  padding: 2rem;
-  border: 1px solid #e5e7eb;
-}
-
-.slogan-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.form-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-}
-
-.required {
-  color: #ef4444;
-}
-
-.form-input,
-.form-textarea {
-  width: 100%;
-  padding: 12px 16px;
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 15px;
-  color: #0f172a;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.form-input-lg {
-  padding: 14px 16px;
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.form-input:focus,
-.form-textarea:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.form-input:disabled,
-.form-textarea:disabled {
-  background: #f8fafc;
-  color: #94a3b8;
-  cursor: not-allowed;
-}
-
-.form-textarea {
-  resize: vertical;
-  min-height: 80px;
-}
-
-.form-hint {
-  font-size: 13px;
-  color: #94a3b8;
-  margin: 0;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  padding-top: 0.5rem;
-}
-
-.save-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 24px;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
-}
-
-.save-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
-}
-
-.save-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
 }
 
 /* Stats Grid */
