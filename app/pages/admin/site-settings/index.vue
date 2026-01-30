@@ -4,6 +4,7 @@ import { useAdminAuth } from "~/composables/admin/useAdminAuth";
 import { useAdminAPI } from "~/composables/admin/useAdminAPI";
 import AdminLayout from "~/components/admin/AdminLayout.vue";
 import ImageCropUpload from "~/components/admin/ImageCropUpload.vue";
+import type { ThemeConfig } from "~/types/database";
 
 definePageMeta({
   middleware: "admin-auth",
@@ -22,7 +23,9 @@ if (!hasPermission("profile:write")) {
 const isLoading = ref(false);
 const isSaving = ref(false);
 const isSavingSlogan = ref(false);
+const isSavingTheme = ref(false);
 const settings = ref<any>(null);
+const availableThemes = ref<ThemeConfig[]>([]);
 
 // 表單狀態
 const formState = reactive({
@@ -33,6 +36,7 @@ const formState = reactive({
   ogTitle: "",
   ogDescription: "",
   ogImage: "",
+  activeTheme: "classic",
 });
 
 // 標語表單
@@ -50,6 +54,7 @@ const loadSettings = async () => {
   try {
     const response = await api.get("/api/admin/site-settings");
     settings.value = response.settings;
+    availableThemes.value = response.availableThemes || [];
 
     // 填充表單
     formState.siteName = response.settings.siteName || "";
@@ -59,6 +64,7 @@ const loadSettings = async () => {
     formState.ogTitle = response.settings.ogTitle || "";
     formState.ogDescription = response.settings.ogDescription || "";
     formState.ogImage = response.settings.ogImage || "";
+    formState.activeTheme = response.settings.activeTheme || "classic";
   } catch (error: any) {
     console.error("載入網站設定失敗:", error);
     // 如果是 404，代表尚未有設定，這是正常的
@@ -101,16 +107,19 @@ const handleSubmit = async () => {
   isSaving.value = true;
 
   try {
+    // 移除描述中的換行字符
+    const cleanDescription = (text: string) => text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
+
     const response = await api.put(
       "/api/admin/site-settings",
       {
         siteName: formState.siteName.trim(),
         siteTitle: formState.siteTitle.trim(),
-        siteDescription: formState.siteDescription.trim(),
+        siteDescription: cleanDescription(formState.siteDescription),
         siteAuthor: formState.siteAuthor.trim(),
         ogTitle: formState.ogTitle.trim() || formState.siteTitle.trim(),
         ogDescription:
-          formState.ogDescription.trim() || formState.siteDescription.trim(),
+          cleanDescription(formState.ogDescription) || cleanDescription(formState.siteDescription),
         ogImage: formState.ogImage.trim() || undefined,
       },
       {
@@ -144,6 +153,43 @@ const autoFillOg = () => {
   }
   if (!formState.ogDescription) {
     formState.ogDescription = formState.siteDescription;
+  }
+};
+
+/**
+ * 選擇主題
+ */
+const selectTheme = (themeId: string) => {
+  formState.activeTheme = themeId;
+};
+
+/**
+ * 儲存主題設定
+ */
+const saveTheme = async () => {
+  isSavingTheme.value = true;
+  try {
+    await api.put(
+      "/api/admin/site-settings",
+      {
+        ...formState,
+        activeTheme: formState.activeTheme,
+      },
+      {
+        showSuccessToast: true,
+        successMessage: "網站風格已更新，前台將自動同步",
+      }
+    );
+  } catch (error) {
+    console.error("儲存主題設定失敗:", error);
+    toast.add({
+      title: "儲存失敗",
+      description: "無法儲存主題設定",
+      color: "error",
+      icon: "i-heroicons-x-circle",
+    });
+  } finally {
+    isSavingTheme.value = false;
   }
 };
 
@@ -282,17 +328,219 @@ onMounted(() => {
             <!-- 網站描述 -->
             <div class="form-field full-width">
               <label class="field-label">網站描述</label>
-              <textarea
+              <input
                 v-model="formState.siteDescription"
-                class="field-textarea"
+                type="text"
+                class="field-input"
                 placeholder="簡短描述您的網站，將用於搜尋引擎結果顯示"
-                rows="3"
                 :disabled="isSaving"
-              ></textarea>
+              />
               <p class="field-hint">
                 用於 SEO，建議 150-160 字元內，會顯示在 Google 搜尋結果
               </p>
             </div>
+          </div>
+        </div>
+
+        <!-- 網站風格設定 -->
+        <div class="form-section">
+          <div class="section-header">
+            <div>
+              <h3 class="section-title">網站風格</h3>
+              <p class="section-description">
+                選擇網站的整體視覺風格，包含配色、字體、佈局和動畫效果
+              </p>
+            </div>
+          </div>
+
+          <div class="theme-grid">
+            <div
+              v-for="theme in availableThemes"
+              :key="theme.id"
+              class="theme-card"
+              :class="{ 'theme-card--selected': formState.activeTheme === theme.id }"
+              @click="selectTheme(theme.id)"
+            >
+              <!-- 主題預覽 -->
+              <div
+                class="theme-preview"
+                :class="{
+                  'theme-preview--side-nav': theme.layout?.navStyle === 'side'
+                }"
+                :style="{
+                  background: theme.colors.bg,
+                  borderRadius: theme.effects.borderRadiusCard
+                }"
+              >
+                <!-- 側邊導航 -->
+                <div
+                  v-if="theme.layout?.navStyle === 'side'"
+                  class="theme-preview__side-nav"
+                  :style="{ borderColor: theme.colors.border }"
+                >
+                  <div
+                    class="theme-preview__side-logo"
+                    :style="{ color: theme.colors.text }"
+                  >L</div>
+                  <div class="theme-preview__side-links">
+                    <span :style="{ background: theme.colors.textMuted }"></span>
+                    <span :style="{ background: theme.colors.textMuted }"></span>
+                    <span :style="{ background: theme.colors.textMuted }"></span>
+                  </div>
+                </div>
+
+                <div class="theme-preview__main">
+                  <!-- 頂部導航 -->
+                  <div
+                    v-if="theme.layout?.navStyle !== 'side'"
+                    class="theme-preview__nav"
+                    :style="{ borderColor: theme.colors.border }"
+                  >
+                    <div
+                      class="theme-preview__logo"
+                      :style="{ color: theme.colors.text }"
+                    >Logo</div>
+                    <div class="theme-preview__links">
+                      <span :style="{ color: theme.colors.textMuted }">連結</span>
+                      <span :style="{ color: theme.colors.textMuted }">連結</span>
+                    </div>
+                  </div>
+
+                  <!-- 模擬 Hero 內容 -->
+                  <div
+                    class="theme-preview__content"
+                    :class="{
+                      'theme-preview__content--centered': theme.layout?.heroStyle === 'centered',
+                      'theme-preview__content--left': theme.layout?.heroStyle === 'left-aligned',
+                      'theme-preview__content--fullscreen': theme.layout?.heroStyle === 'fullscreen'
+                    }"
+                  >
+                    <div
+                      class="theme-preview__title"
+                      :class="{
+                        'theme-preview__title--large': theme.layout?.heroTitleSize === 'large',
+                        'theme-preview__title--xlarge': theme.layout?.heroTitleSize === 'xlarge'
+                      }"
+                      :style="{ color: theme.colors.text }"
+                    >標題</div>
+                    <div
+                      class="theme-preview__text"
+                      :style="{ color: theme.colors.textMuted }"
+                    >描述文字</div>
+                    <div
+                      class="theme-preview__button"
+                      :style="{
+                        background: theme.colors.accent,
+                        borderRadius: theme.effects.borderRadiusButton
+                      }"
+                    >按鈕</div>
+                  </div>
+
+                  <!-- 模擬作品網格 -->
+                  <div
+                    class="theme-preview__cards"
+                    :class="{
+                      'theme-preview__cards--1col': theme.layout?.projectsColumns === 1,
+                      'theme-preview__cards--2col': theme.layout?.projectsColumns === 2,
+                      'theme-preview__cards--3col': theme.layout?.projectsColumns === 3,
+                      'theme-preview__cards--list': theme.layout?.projectsLayout === 'list'
+                    }"
+                  >
+                    <div
+                      v-for="i in (theme.layout?.projectsLayout === 'list' ? 2 : Math.min(theme.layout?.projectsColumns || 2, 3))"
+                      :key="i"
+                      class="theme-preview__card"
+                      :class="{
+                        'theme-preview__card--elevated': theme.layout?.cardStyle === 'elevated',
+                        'theme-preview__card--flat': theme.layout?.cardStyle === 'flat',
+                        'theme-preview__card--outlined': theme.layout?.cardStyle === 'outlined',
+                        'theme-preview__card--glowing': theme.layout?.cardStyle === 'glowing'
+                      }"
+                      :style="{
+                        background: theme.colors.bgSecondary,
+                        borderRadius: theme.effects.borderRadiusCard,
+                        boxShadow: theme.layout?.cardStyle === 'elevated' ? theme.effects.shadowCard : 'none',
+                        borderColor: theme.layout?.cardStyle === 'outlined' ? theme.colors.border : 'transparent',
+                        '--glow-color': theme.colors.accent
+                      }"
+                    >
+                      <div class="theme-preview__card-image" :style="{ background: theme.colors.accent + '30' }"></div>
+                      <div class="theme-preview__card-line" :style="{ background: theme.colors.text }"></div>
+                      <div class="theme-preview__card-line theme-preview__card-line--short" :style="{ background: theme.colors.textMuted }"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 主題資訊 -->
+              <div class="theme-info">
+                <div class="theme-info__header">
+                  <h4 class="theme-info__name">{{ theme.name }}</h4>
+                  <div
+                    v-if="formState.activeTheme === theme.id"
+                    class="theme-info__badge"
+                  >
+                    <UIcon name="i-heroicons-check" />
+                    目前選用
+                  </div>
+                </div>
+                <p class="theme-info__description">{{ theme.description }}</p>
+
+                <!-- 特性標籤 -->
+                <div class="theme-features">
+                  <span class="theme-feature" :title="'Hero 佈局: ' + (theme.layout?.heroStyle || 'centered')">
+                    {{ theme.layout?.heroStyle === 'centered' ? '置中' : theme.layout?.heroStyle === 'left-aligned' ? '左對齊' : '全屏' }}
+                  </span>
+                  <span class="theme-feature" :title="'導航: ' + (theme.layout?.navStyle || 'top-blur')">
+                    {{ theme.layout?.navStyle === 'side' ? '側邊導航' : '頂部導航' }}
+                  </span>
+                  <span class="theme-feature" :title="'作品欄數: ' + (theme.layout?.projectsColumns || 2)">
+                    {{ theme.layout?.projectsColumns || 2 }} 欄
+                  </span>
+                </div>
+
+                <!-- 色票預覽 -->
+                <div class="theme-swatches">
+                  <div
+                    class="theme-swatch"
+                    :style="{ background: theme.colors.bg }"
+                    title="背景色"
+                  ></div>
+                  <div
+                    class="theme-swatch"
+                    :style="{ background: theme.colors.text }"
+                    title="文字色"
+                  ></div>
+                  <div
+                    class="theme-swatch"
+                    :style="{ background: theme.colors.accent }"
+                    title="強調色"
+                  ></div>
+                  <div
+                    class="theme-swatch"
+                    :style="{ background: theme.colors.border }"
+                    title="邊框色"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="theme-actions">
+            <button
+              type="button"
+              class="button button-primary"
+              :disabled="isSavingTheme"
+              @click="saveTheme"
+            >
+              <UIcon
+                v-if="isSavingTheme"
+                name="i-heroicons-arrow-path"
+                class="animate-spin"
+              />
+              <UIcon v-else name="i-heroicons-paint-brush" />
+              {{ isSavingTheme ? "套用中..." : "套用風格" }}
+            </button>
           </div>
         </div>
 
@@ -434,13 +682,13 @@ onMounted(() => {
             <!-- OG 描述 -->
             <div class="form-field full-width">
               <label class="field-label">分享描述</label>
-              <textarea
+              <input
                 v-model="formState.ogDescription"
-                class="field-textarea"
+                type="text"
+                class="field-input"
                 :placeholder="formState.siteDescription || '留空將使用網站描述'"
-                rows="2"
                 :disabled="isSaving"
-              ></textarea>
+              />
               <p class="field-hint">留空將自動使用網站描述</p>
             </div>
 
@@ -1062,6 +1310,316 @@ onMounted(() => {
   cursor: not-allowed;
 }
 
+/* Theme Selector */
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.theme-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: white;
+}
+
+.theme-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.1);
+}
+
+.theme-card--selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.theme-card--selected:hover {
+  border-color: #3b82f6;
+}
+
+.theme-preview {
+  padding: 0.75rem;
+  min-height: 180px;
+  display: flex;
+  flex-direction: row;
+  gap: 0;
+  border-bottom: 1px solid #f1f5f9;
+  overflow: hidden;
+}
+
+.theme-preview--side-nav {
+  padding: 0;
+}
+
+/* 側邊導航預覽 */
+.theme-preview__side-nav {
+  width: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-right: 1px solid;
+  gap: 0.75rem;
+}
+
+.theme-preview__side-logo {
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.theme-preview__side-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.theme-preview__side-links span {
+  width: 3px;
+  height: 12px;
+  border-radius: 1px;
+  opacity: 0.5;
+}
+
+/* 主內容區域 */
+.theme-preview__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}
+
+.theme-preview--side-nav .theme-preview__main {
+  padding: 0.75rem;
+}
+
+/* 頂部導航 */
+.theme-preview__nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.375rem;
+  border-bottom: 1px solid;
+}
+
+.theme-preview__logo {
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+.theme-preview__links {
+  display: flex;
+  gap: 0.375rem;
+  font-size: 0.5rem;
+}
+
+/* Hero 內容 */
+.theme-preview__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.375rem 0;
+}
+
+.theme-preview__content--centered {
+  align-items: center;
+  text-align: center;
+}
+
+.theme-preview__content--left {
+  align-items: flex-start;
+  text-align: left;
+}
+
+.theme-preview__content--fullscreen {
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.theme-preview__title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.theme-preview__title--large {
+  font-size: 0.875rem;
+}
+
+.theme-preview__title--xlarge {
+  font-size: 1rem;
+}
+
+.theme-preview__text {
+  font-size: 0.5rem;
+  line-height: 1.3;
+  opacity: 0.7;
+}
+
+.theme-preview__button {
+  width: fit-content;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.5rem;
+  color: white;
+  margin-top: 0.125rem;
+}
+
+/* 作品卡片網格 */
+.theme-preview__cards {
+  display: grid;
+  gap: 0.375rem;
+  margin-top: auto;
+}
+
+.theme-preview__cards--1col {
+  grid-template-columns: 1fr;
+}
+
+.theme-preview__cards--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.theme-preview__cards--3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.theme-preview__cards--list {
+  grid-template-columns: 1fr;
+}
+
+.theme-preview__cards--list .theme-preview__card {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-preview__cards--list .theme-preview__card-image {
+  width: 40px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* 卡片樣式 */
+.theme-preview__card {
+  padding: 0.375rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: all 0.2s;
+}
+
+.theme-preview__card--outlined {
+  border: 1px solid;
+}
+
+.theme-preview__card--glowing {
+  box-shadow: 0 0 8px var(--glow-color, rgba(0, 255, 136, 0.3));
+}
+
+.theme-preview__card-image {
+  width: 100%;
+  height: 20px;
+  border-radius: 2px;
+}
+
+.theme-preview__card-line {
+  height: 3px;
+  border-radius: 1px;
+  width: 70%;
+  opacity: 0.7;
+}
+
+.theme-preview__card-line--short {
+  width: 50%;
+  opacity: 0.4;
+}
+
+/* 主題資訊 */
+.theme-info {
+  padding: 1rem;
+}
+
+.theme-info__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.theme-info__name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.theme-info__badge {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #16a34a;
+  background: #dcfce7;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+}
+
+.theme-info__description {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+/* 特性標籤 */
+.theme-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin-bottom: 0.75rem;
+}
+
+.theme-feature {
+  font-size: 0.6875rem;
+  padding: 0.25rem 0.5rem;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* 色票 */
+.theme-swatches {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.theme-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.theme-swatch:hover {
+  transform: scale(1.15);
+}
+
+.theme-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .form-section {
@@ -1084,6 +1642,19 @@ onMounted(() => {
 
   .form-field.full-width {
     grid-column: 1;
+  }
+
+  .theme-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-actions {
+    justify-content: stretch;
+  }
+
+  .theme-actions .button {
+    width: 100%;
+    justify-content: center;
   }
 
   .og-preview-image {

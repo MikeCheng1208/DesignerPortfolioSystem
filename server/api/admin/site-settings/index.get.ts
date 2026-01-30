@@ -1,5 +1,6 @@
 import { getCollection } from '../../../utils/db'
 import type { SiteSettingsDocument } from '../../../../app/types/database'
+import { DEFAULT_THEMES } from '../../../../app/types/database'
 
 /**
  * GET /api/admin/site-settings
@@ -28,10 +29,12 @@ export default defineEventHandler(async () => {
         ogTitle: settings.ogTitle,
         ogDescription: settings.ogDescription,
         ogImage: settings.ogImage,
+        activeTheme: settings.activeTheme || 'classic',
         isActive: settings.isActive,
         createdAt: settings.createdAt.toISOString(),
         updatedAt: settings.updatedAt.toISOString()
-      }
+      },
+      availableThemes: DEFAULT_THEMES
     }
   } catch (error: any) {
     if (error.statusCode) {

@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // 準備更新資料
-    const updateData = {
+    const updateData: Record<string, any> = {
       siteName: body.siteName.trim(),
       siteTitle: body.siteTitle.trim(),
       siteDescription: body.siteDescription?.trim() || '',
@@ -34,6 +34,11 @@ export default defineEventHandler(async (event) => {
       ogDescription: body.ogDescription?.trim() || body.siteDescription?.trim() || '',
       ogImage: body.ogImage?.trim() || undefined,
       updatedAt: new Date()
+    }
+
+    // 如果有提供 activeTheme，則更新
+    if (body.activeTheme !== undefined) {
+      updateData.activeTheme = body.activeTheme
     }
 
     const collection = await getCollection<SiteSettingsDocument>('site_settings')
@@ -64,6 +69,7 @@ export default defineEventHandler(async (event) => {
         ogTitle: result.ogTitle,
         ogDescription: result.ogDescription,
         ogImage: result.ogImage,
+        activeTheme: result.activeTheme || 'classic',
         isActive: result.isActive,
         createdAt: result.createdAt.toISOString(),
         updatedAt: result.updatedAt.toISOString()

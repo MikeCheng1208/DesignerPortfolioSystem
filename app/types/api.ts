@@ -105,6 +105,8 @@ export interface ContactInfo {
   links: ContactLink[]
 }
 
+import type { ThemeConfig } from './database'
+
 /**
  * 網站設定
  */
@@ -116,4 +118,6 @@ export interface SiteSettings {
   ogTitle?: string
   ogDescription?: string
   ogImage?: string
+  activeTheme?: string       // 當前啟用的主題 ID
+  theme?: ThemeConfig        // 完整主題配置（由 API 根據 activeTheme 填充）
 }

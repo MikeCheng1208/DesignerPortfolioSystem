@@ -242,8 +242,8 @@ useHead(() => ({
   right: 0;
   z-index: 1000;
   padding: 2rem 0;
-  background: rgba(250, 250, 249, 0.8);
-  backdrop-filter: blur(20px);
+  background: color-mix(in srgb, var(--color-bg) calc(var(--nav-bg-opacity) * 100%), transparent);
+  backdrop-filter: var(--nav-blur);
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -340,9 +340,9 @@ useHead(() => ({
 
 .tag {
   padding: 0.75rem 1.5rem;
-  background: white;
+  background: var(--color-bg-secondary);
   font-size: 0.875rem;
-  border-radius: 100px;
+  border-radius: var(--border-radius-button);
   color: var(--color-text-muted);
   border: 1px solid var(--color-border);
 }
@@ -361,7 +361,7 @@ useHead(() => ({
 
 .project-cover__image {
   aspect-ratio: 16 / 9;
-  border-radius: 16px;
+  border-radius: var(--border-radius-card);
   overflow: hidden;
   position: relative;
   opacity: 0;
@@ -395,7 +395,7 @@ useHead(() => ({
 /* Project Overview */
 .project-overview {
   padding: 6rem 0;
-  background: white;
+  background: var(--color-bg-secondary);
 }
 
 .project-overview__container {
@@ -479,7 +479,7 @@ useHead(() => ({
 /* Gallery */
 .project-gallery {
   padding: 6rem 0;
-  background: white;
+  background: var(--color-bg-secondary);
 }
 
 .project-gallery__container {
@@ -507,7 +507,7 @@ useHead(() => ({
 
 .gallery__image {
   aspect-ratio: 16 / 10;
-  border-radius: 12px;
+  border-radius: var(--border-radius-card);
   margin-bottom: 1rem;
   display: flex;
   align-items: center;
@@ -599,8 +599,9 @@ useHead(() => ({
 .result-card {
   text-align: center;
   padding: 3rem 2rem;
-  background: white;
-  border-radius: 12px;
+  background: var(--color-bg-secondary);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--shadow-card);
   transition: transform 0.3s var(--ease-out-expo);
 }
 
@@ -624,7 +625,7 @@ useHead(() => ({
 /* Project Navigation */
 .project-nav {
   padding: 4rem 0 6rem;
-  background: white;
+  background: var(--color-bg-secondary);
 }
 
 .project-nav__container {
@@ -642,14 +643,14 @@ useHead(() => ({
   gap: 0.75rem;
   padding: 3rem;
   background: var(--color-bg);
-  border-radius: 12px;
+  border-radius: var(--border-radius-card);
   text-decoration: none;
   transition: all 0.3s var(--ease-out-expo);
 }
 
 .project-nav__link:hover {
   transform: translateY(-4px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-card);
 }
 
 .project-nav__link--next {
@@ -690,13 +691,14 @@ useHead(() => ({
   background: var(--color-accent);
   color: white;
   text-decoration: none;
-  border-radius: 100px;
+  border-radius: var(--border-radius-button);
   transition: all 0.3s var(--ease-out-expo);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px rgba(30, 64, 175, 0.3);
+  background: var(--color-accent-hover);
+  box-shadow: var(--shadow-card);
 }
 
 /* Animations */

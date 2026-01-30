@@ -288,8 +288,10 @@ onMounted(() => {
                 v-model="formState.projectId"
                 type="text"
                 class="form-input"
+                placeholder="fintech-app"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：fintech-app</p>
             </div>
 
             <div class="form-group">
@@ -300,8 +302,10 @@ onMounted(() => {
                 v-model="formState.slug"
                 type="text"
                 class="form-input"
+                placeholder="fintech-app"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：fintech-app</p>
             </div>
           </div>
 
@@ -313,8 +317,10 @@ onMounted(() => {
               v-model="formState.title"
               type="text"
               class="form-input form-input-lg"
+              placeholder="請輸入作品標題"
               :disabled="isSaving"
             />
+            <p class="form-example">範例：金融科技 App 重新設計</p>
           </div>
 
           <div class="form-grid-2">
@@ -326,8 +332,10 @@ onMounted(() => {
                 v-model="formState.category"
                 type="text"
                 class="form-input"
+                placeholder="UI/UX Design"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：UI/UX Design</p>
             </div>
 
             <div class="form-group">
@@ -338,8 +346,10 @@ onMounted(() => {
                 v-model="formState.year"
                 type="text"
                 class="form-input"
+                placeholder="2024"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：2024</p>
             </div>
           </div>
 
@@ -351,8 +361,10 @@ onMounted(() => {
               v-model="formState.description"
               rows="3"
               class="form-textarea"
+              placeholder="請輸入作品的簡短描述"
               :disabled="isSaving"
             ></textarea>
+            <p class="form-example">範例：為一間金融科技新創公司重新設計行動 App，提升用戶體驗與轉換率</p>
           </div>
 
           <!-- Tags -->
@@ -386,20 +398,6 @@ onMounted(() => {
               />
             </div>
           </div>
-
-          <div class="form-group">
-            <label class="form-label">
-              卡片顏色 <span class="required">*</span>
-            </label>
-            <input
-              v-model="formState.color"
-              type="text"
-              class="form-input"
-              placeholder="#667EEA"
-              :disabled="isSaving"
-            />
-            <p class="form-hint">作品列表卡片的背景色</p>
-          </div>
         </div>
 
         <div class="form-divider"></div>
@@ -416,8 +414,10 @@ onMounted(() => {
               v-model="formState.overview"
               rows="4"
               class="form-textarea"
+              placeholder="請輸入專案概述"
               :disabled="isSaving"
             ></textarea>
+            <p class="form-example">範例：這是一個為金融科技新創公司設計的行動應用程式，目標是簡化用戶的投資體驗。</p>
           </div>
 
           <div class="form-grid-3">
@@ -429,8 +429,10 @@ onMounted(() => {
                 v-model="formState.client"
                 type="text"
                 class="form-input"
+                placeholder="客戶名稱"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：ABC 金融科技公司</p>
             </div>
 
             <div class="form-group">
@@ -441,8 +443,10 @@ onMounted(() => {
                 v-model="formState.duration"
                 type="text"
                 class="form-input"
+                placeholder="3 個月"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：3 個月</p>
             </div>
 
             <div class="form-group">
@@ -453,8 +457,10 @@ onMounted(() => {
                 v-model="formState.role"
                 type="text"
                 class="form-input"
+                placeholder="UI/UX Designer"
                 :disabled="isSaving"
               />
+              <p class="form-example">範例：UI/UX Designer</p>
             </div>
           </div>
 
@@ -466,8 +472,10 @@ onMounted(() => {
               v-model="formState.tools"
               type="text"
               class="form-input"
+              placeholder="Figma, Sketch, Adobe XD"
               :disabled="isSaving"
             />
+            <p class="form-example">範例：Figma, Sketch, Adobe XD</p>
           </div>
 
           <div class="form-group">
@@ -478,8 +486,10 @@ onMounted(() => {
               v-model="formState.challenge"
               rows="4"
               class="form-textarea"
+              placeholder="請描述專案面臨的挑戰"
               :disabled="isSaving"
             ></textarea>
+            <p class="form-example">範例：原有的 App 介面複雜，導致用戶流失率高，需要重新設計以提升易用性。</p>
           </div>
 
           <div class="form-group">
@@ -490,8 +500,10 @@ onMounted(() => {
               v-model="formState.solution"
               rows="4"
               class="form-textarea"
+              placeholder="請描述如何解決挑戰"
               :disabled="isSaving"
             ></textarea>
+            <p class="form-example">範例：透過用戶研究找出痛點，重新設計資訊架構和視覺介面，簡化操作流程。</p>
           </div>
         </div>
 
@@ -501,47 +513,16 @@ onMounted(() => {
         <div class="form-section">
           <h3 class="section-title">作品封面設定</h3>
 
-          <div class="cover-section">
-            <div class="cover-upload-area">
-              <label class="form-label">封面圖片</label>
-              <ImageUpload
-                v-model="formState.coverImage"
-                :folder="`projects/${formState.projectId}/cover`"
-                placeholder="點擊或拖曳上傳封面圖片"
-                help="建議尺寸 1200x630，支援 JPG、PNG、WebP"
-                preview-class="cover-image-preview"
-              />
-              <p class="form-hint">作品卡片和分享時顯示的主要圖片</p>
-            </div>
-
-            <div class="cover-gradient-area">
-              <div class="form-group">
-                <label class="form-label">
-                  封面漸層色 <span class="required">*</span>
-                </label>
-                <input
-                  v-model="formState.coverGradient"
-                  type="text"
-                  class="form-input"
-                  placeholder="from-blue-500 to-purple-600"
-                  :disabled="isSaving"
-                />
-                <p class="form-hint">當封面圖片載入中或未設定時顯示的漸層背景</p>
-              </div>
-
-              <!-- 漸層預覽 -->
-              <div class="gradient-preview-wrapper">
-                <label class="form-label">漸層預覽</label>
-                <div
-                  class="gradient-preview"
-                  :class="`bg-gradient-to-br ${formState.coverGradient}`"
-                >
-                  <span v-if="!formState.coverGradient" class="preview-placeholder">
-                    輸入漸層色後預覽
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div class="cover-upload-area">
+            <label class="form-label">封面圖片</label>
+            <ImageUpload
+              v-model="formState.coverImage"
+              :folder="`projects/${formState.projectId}/cover`"
+              placeholder="點擊或拖曳上傳封面圖片"
+              help="建議尺寸 1200x630，支援 JPG、PNG、WebP"
+              preview-class="cover-image-preview"
+            />
+            <p class="form-hint">作品卡片和分享時顯示的主要圖片</p>
           </div>
         </div>
 
@@ -1111,6 +1092,18 @@ onMounted(() => {
   color: #94a3b8;
   margin-top: 6px;
   margin-bottom: 0;
+}
+
+.form-example {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 4px 0 0 0;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 2px solid #e2e8f0;
+  user-select: all;
+  cursor: text;
 }
 
 /* Results Section */

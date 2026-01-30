@@ -31,9 +31,9 @@ const formState = reactive({
   year: new Date().getFullYear().toString(),
   description: '',
   tags: [] as string[],
-  color: '',
+  color: '#6b7280',  // 預設灰色
   coverImage: '',
-  coverGradient: '',
+  coverGradient: 'from-gray-400 to-gray-600',  // 預設灰色漸層
   overview: '',
   client: '',
   duration: '',
@@ -122,8 +122,6 @@ const handleSubmit = async () => {
     category: '分類',
     year: '年份',
     description: '簡短描述',
-    color: '卡片顏色',
-    coverGradient: '封面漸層',
     overview: '專案概述',
     client: '客戶',
     duration: '時程',
@@ -200,6 +198,7 @@ watch(() => formState.projectId, (newValue) => {
                 :disabled="isSaving"
               />
               <p class="field-hint">URL 友善的唯一識別碼</p>
+              <p class="field-example">範例：fintech-app</p>
             </div>
 
             <!-- Slug -->
@@ -216,6 +215,7 @@ watch(() => formState.projectId, (newValue) => {
                 :disabled="isSaving"
               />
               <p class="field-hint">用於 SEO 的網址路徑</p>
+              <p class="field-example">範例：fintech-app</p>
             </div>
 
             <!-- Title -->
@@ -231,6 +231,7 @@ watch(() => formState.projectId, (newValue) => {
                 placeholder="請輸入作品標題"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：金融科技 App 重新設計</p>
             </div>
 
             <!-- Category -->
@@ -243,9 +244,10 @@ watch(() => formState.projectId, (newValue) => {
                 v-model="formState.category"
                 type="text"
                 class="field-input"
-                placeholder="例如: UI/UX Design"
+                placeholder="UI/UX Design"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：UI/UX Design</p>
             </div>
 
             <!-- Year -->
@@ -261,6 +263,7 @@ watch(() => formState.projectId, (newValue) => {
                 placeholder="2024"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：2024</p>
             </div>
 
             <!-- Description -->
@@ -276,6 +279,7 @@ watch(() => formState.projectId, (newValue) => {
                 rows="3"
                 :disabled="isSaving"
               ></textarea>
+              <p class="field-example">範例：為一間金融科技新創公司重新設計行動 App，提升用戶體驗與轉換率</p>
             </div>
 
             <!-- Tags -->
@@ -309,22 +313,6 @@ watch(() => formState.projectId, (newValue) => {
               </div>
               <p class="field-hint">按 Enter 新增標籤</p>
             </div>
-
-            <!-- Color -->
-            <div class="form-field full-width">
-              <label class="field-label">
-                卡片顏色
-                <span class="required">*</span>
-              </label>
-              <input
-                v-model="formState.color"
-                type="text"
-                class="field-input"
-                placeholder="#667EEA"
-                :disabled="isSaving"
-              />
-              <p class="field-hint">作品列表卡片的背景色</p>
-            </div>
           </div>
         </div>
 
@@ -349,6 +337,7 @@ watch(() => formState.projectId, (newValue) => {
                 rows="4"
                 :disabled="isSaving"
               ></textarea>
+              <p class="field-example">範例：這是一個為金融科技新創公司設計的行動應用程式，目標是簡化用戶的投資體驗。</p>
             </div>
 
             <!-- Client -->
@@ -364,6 +353,7 @@ watch(() => formState.projectId, (newValue) => {
                 placeholder="客戶名稱"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：ABC 金融科技公司</p>
             </div>
 
             <!-- Duration -->
@@ -379,6 +369,7 @@ watch(() => formState.projectId, (newValue) => {
                 placeholder="3 個月"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：3 個月</p>
             </div>
 
             <!-- Role -->
@@ -394,6 +385,7 @@ watch(() => formState.projectId, (newValue) => {
                 placeholder="UI/UX Designer"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：UI/UX Designer</p>
             </div>
 
             <!-- Tools -->
@@ -409,6 +401,7 @@ watch(() => formState.projectId, (newValue) => {
                 placeholder="Figma, Sketch, Adobe XD"
                 :disabled="isSaving"
               />
+              <p class="field-example">範例：Figma, Sketch, Adobe XD</p>
             </div>
 
             <!-- Challenge -->
@@ -424,6 +417,7 @@ watch(() => formState.projectId, (newValue) => {
                 rows="4"
                 :disabled="isSaving"
               ></textarea>
+              <p class="field-example">範例：原有的 App 介面複雜，導致用戶流失率高，需要重新設計以提升易用性。</p>
             </div>
 
             <!-- Solution -->
@@ -439,6 +433,7 @@ watch(() => formState.projectId, (newValue) => {
                 rows="4"
                 :disabled="isSaving"
               ></textarea>
+              <p class="field-example">範例：透過用戶研究找出痛點，重新設計資訊架構和視覺介面，簡化操作流程。</p>
             </div>
           </div>
         </div>
@@ -450,48 +445,16 @@ watch(() => formState.projectId, (newValue) => {
             <p class="section-description">設定作品卡片和分享時顯示的封面圖片</p>
           </div>
 
-          <div class="cover-section">
-            <div class="cover-upload-area">
-              <label class="field-label">封面圖片</label>
-              <ImageUpload
-                v-model="formState.coverImage"
-                :folder="`projects/${formState.projectId || 'new'}/cover`"
-                placeholder="點擊或拖曳上傳封面圖片"
-                help="建議尺寸 1200x630，支援 JPG、PNG、WebP"
-                preview-class="cover-image-preview"
-              />
-              <p class="field-hint">作品卡片和分享時顯示的主要圖片</p>
-            </div>
-
-            <div class="cover-gradient-area">
-              <div class="form-field">
-                <label class="field-label">
-                  封面漸層色
-                  <span class="required">*</span>
-                </label>
-                <input
-                  v-model="formState.coverGradient"
-                  type="text"
-                  class="field-input"
-                  placeholder="from-blue-500 to-purple-600"
-                  :disabled="isSaving"
-                />
-                <p class="field-hint">當封面圖片載入中或未設定時顯示的漸層背景</p>
-              </div>
-
-              <!-- 漸層預覽 -->
-              <div class="gradient-preview-wrapper">
-                <label class="field-label">漸層預覽</label>
-                <div
-                  class="gradient-preview"
-                  :class="`bg-gradient-to-br ${formState.coverGradient}`"
-                >
-                  <span v-if="!formState.coverGradient" class="preview-placeholder">
-                    輸入漸層色後預覽
-                  </span>
-                </div>
-              </div>
-            </div>
+          <div class="cover-upload-area">
+            <label class="field-label">封面圖片</label>
+            <ImageUpload
+              v-model="formState.coverImage"
+              :folder="`projects/${formState.projectId || 'new'}/cover`"
+              placeholder="點擊或拖曳上傳封面圖片"
+              help="建議尺寸 1200x630，支援 JPG、PNG、WebP"
+              preview-class="cover-image-preview"
+            />
+            <p class="field-hint">作品卡片和分享時顯示的主要圖片</p>
           </div>
         </div>
 
@@ -833,6 +796,18 @@ watch(() => formState.projectId, (newValue) => {
   font-size: 0.8125rem;
   color: #64748b;
   margin: 0;
+}
+
+.field-example {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  margin: 0.25rem 0 0 0;
+  padding: 0.375rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border-left: 2px solid #e2e8f0;
+  user-select: all;
+  cursor: text;
 }
 
 /* Tags */
