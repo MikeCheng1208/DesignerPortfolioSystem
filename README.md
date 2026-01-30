@@ -1,5 +1,9 @@
 # Designer Portfolio System
 
+<p align="center">
+  <img src="./public/readme-cover.svg" alt="Designer Portfolio System - 6 Themes" width="100%">
+</p>
+
 一個專為設計師打造的作品集網站系統。只需簡單部署到 Zeabur，即可擁有一個專業、美觀的個人作品集網站。
 
 ## 特色功能
@@ -21,6 +25,23 @@
 - 聯絡資訊管理
 - 使用者權限管理
 - JWT 安全認證
+
+### 多風格主題系統
+
+系統內建 6 種精心設計的視覺風格，可在後台一鍵切換：
+
+| 風格 | ID | 特色 |
+|------|-----|------|
+| 經典優雅 | `classic` | 米白色調、Playfair Display 襯線字體、毛玻璃導航、柔和陰影 |
+| 現代極簡 | `minimal` | 純黑白配色、大量留白、無圓角設計、優雅的淡入動畫 |
+| 創意大膽 | `creative` | 橘紅強調色、傾斜標題、彩色陰影、動感的滑入效果 |
+| 日系清新 | `japanese` | 奶油白底、柔粉色調、Noto Sans TC 細體、緩慢淡入 |
+| 科技未來 | `tech` | 深黑背景、霓虹綠發光效果、JetBrains Mono 等寬字體 |
+| 野獸派 | `brutal` | 高對比黑白、粗獷排版、Glitch 故障藝術動態標題 |
+
+**切換方式：** 登入後台 → 網站設定 → 選擇主題 → 儲存
+
+每種風格都包含完整的配色、字體、圓角、陰影、動畫等設定，並自動適配 RWD 響應式設計。
 
 ## 技術棧
 
@@ -98,7 +119,9 @@
 ```
 ├── app/
 │   ├── components/       # Vue 元件
-│   │   └── admin/        # 後台專用元件
+│   │   ├── admin/        # 後台專用元件
+│   │   └── front/        # 前台元件
+│   │       └── themes/   # 主題組件（6 種風格）
 │   ├── composables/      # 組合式函數
 │   │   └── admin/        # 後台專用 composables
 │   ├── pages/            # 頁面路由

@@ -1,9 +1,15 @@
 # Zeabur 部署指南
 
-這份指南將帶你一步步將作品集網站部署到 Zeabur。
+這份指南將帶你從零開始，一步步將作品集網站部署到 Zeabur 雲端平台。即使你是完全沒有部署經驗的新手，也能順利完成。
+
+> ⏱️ **預計時間**：約 20-30 分鐘
+
+---
 
 ## 目錄
 
+- [這份指南適合誰？](#這份指南適合誰)
+- [部署完成後你會得到什麼？](#部署完成後你會得到什麼)
 - [前置準備](#前置準備)
 - [步驟一：建立 Zeabur 帳號](#步驟一建立-zeabur-帳號)
 - [步驟二：建立專案](#步驟二建立專案)
@@ -12,323 +18,871 @@
 - [步驟五：部署網站服務](#步驟五部署網站服務)
 - [步驟六：環境變數設定](#步驟六環境變數設定)
 - [步驟七：綁定網域](#步驟七綁定網域)
+- [步驟八：驗證部署是否成功](#步驟八驗證部署是否成功)
 - [常見問題](#常見問題)
+- [費用說明](#費用說明)
+
+---
+
+## 這份指南適合誰？
+
+這份指南是為**完全沒有部署經驗**的人所寫的。如果你：
+
+- ✅ 會使用 GitHub（知道怎麼 Fork 專案、Push 程式碼）
+- ✅ 想要有一個自己的作品集網站
+- ✅ 想要網站能被全世界的人看到
+- ❌ 但不知道怎麼把網站「放到網路上」
+
+那這份指南就是為你準備的！
+
+---
+
+## 部署完成後你會得到什麼？
+
+完成這份指南後，你會擁有：
+
+| 項目 | 說明 |
+|------|------|
+| 🌐 **公開網址** | 一個任何人都能存取的網站，例如 `your-name.zeabur.app` |
+| 🎨 **6 種主題風格** | 可在後台一鍵切換網站外觀 |
+| 💼 **作品集管理後台** | 可以新增、編輯、刪除作品 |
+| 📸 **圖片上傳功能** | 可以上傳作品封面、個人照片 |
+| 🔐 **安全的登入系統** | 只有你能進入後台管理 |
 
 ---
 
 ## 前置準備
 
-在開始之前，請確認你已經準備好：
+在開始之前，請確認你已經準備好以下東西：
 
-- [ ] GitHub 帳號（用於連結 Zeabur）
-- [ ] 已將專案 Fork 或 Push 到你的 GitHub Repository
-- [ ] 信用卡或金融卡（Zeabur 需要綁定付款方式，但有免費額度）
+### 1. GitHub 帳號
+
+> 💡 **什麼是 GitHub？** GitHub 是一個存放程式碼的平台，Zeabur 會從這裡讀取你的網站程式碼。
+
+如果你還沒有 GitHub 帳號：
+1. 前往 [github.com](https://github.com)
+2. 點擊「Sign up」註冊
+3. 依照指示完成註冊
+
+### 2. 將專案放到你的 GitHub
+
+你需要將這個作品集專案放到你自己的 GitHub 帳號下。有兩種方式：
+
+**方式 A：Fork（推薦新手）**
+1. 前往專案的 GitHub 頁面
+2. 點擊右上角的「Fork」按鈕
+3. 專案就會複製到你的帳號下
+
+**方式 B：從本地 Push**
+如果你是從本地開發的，用以下指令推送到 GitHub：
+```bash
+# 將你的專案連結到 GitHub Repository
+git remote add origin https://github.com/你的帳號/你的專案名稱.git
+
+# 推送程式碼
+git push -u origin main
+```
+
+### 3. 信用卡或金融卡（可選）
+
+Zeabur 提供免費額度，但需要綁定付款方式。
+
+> ⚠️ **放心**：綁定不會立即扣款，只有超過免費額度才會計費。一般個人作品集網站的用量通常在免費額度內。
+
+### ✅ 前置準備清單
+
+- [ ] 我有 GitHub 帳號
+- [ ] 專案已經在我的 GitHub Repository 中
+- [ ] 我有信用卡/金融卡可以綁定（或願意稍後綁定）
+
+準備好了嗎？讓我們開始吧！
 
 ---
 
 ## 步驟一：建立 Zeabur 帳號
 
-1. 前往 [Zeabur 官網](https://zeabur.com)
-2. 點擊右上角的「Sign In」
-3. 選擇「Continue with GitHub」使用 GitHub 帳號登入
-4. 授權 Zeabur 存取你的 GitHub
+> ⏱️ 預計時間：2 分鐘
+
+### 什麼是 Zeabur？
+
+Zeabur 是一個台灣團隊開發的雲端平台，讓你可以輕鬆部署網站，不需要自己管理伺服器。它的介面簡單直覺，非常適合新手使用。
+
+### 建立帳號步驟
+
+1. **開啟 Zeabur 官網**
+
+   在瀏覽器輸入：[https://zeabur.com](https://zeabur.com)
+
+2. **點擊登入**
+
+   點擊頁面右上角的「**Sign In**」按鈕
+
+3. **選擇 GitHub 登入**
+
+   在登入頁面，點擊「**Continue with GitHub**」
+
+   > 💡 為什麼用 GitHub 登入？這樣 Zeabur 才能讀取你 GitHub 上的程式碼
+
+4. **授權 Zeabur**
+
+   GitHub 會詢問你是否授權 Zeabur 存取你的帳號，點擊「**Authorize**」
+
+5. **完成！**
+
+   授權後，你會自動跳轉到 Zeabur 的控制面板（Dashboard）
 
 ---
 
 ## 步驟二：建立專案
 
-1. 登入後，點擊「Create Project」建立新專案
-2. 輸入專案名稱（例如：`my-portfolio`）
-3. 選擇部署區域：
-   - **Asia - Taiwan** - 台灣（推薦，速度最快）
-   - **Asia - Tokyo** - 日本
-   - **US - West** - 美國西岸
+> ⏱️ 預計時間：1 分鐘
+
+### 什麼是專案？
+
+在 Zeabur 中，「專案（Project）」是一個容器，用來存放你網站需要的所有服務。我們的網站需要：
+
+- **網站服務** - 你的作品集網站本身
+- **MongoDB** - 資料庫，存放你的作品資料、個人資訊等
+- **MinIO** - 物件儲存，存放你上傳的圖片
+
+這三個服務都會放在同一個專案中。
+
+### 建立專案步驟
+
+1. **點擊建立專案**
+
+   在 Dashboard 頁面，點擊「**Create Project**」按鈕
+
+2. **輸入專案名稱**
+
+   取一個你喜歡的名稱，例如：
+   - `my-portfolio`
+   - `design-portfolio`
+   - `你的名字-portfolio`
+
+   > 💡 名稱只能使用英文字母、數字和連字號（-）
+
+3. **選擇部署區域**
+
+   選擇伺服器的地理位置，這會影響網站的速度：
+
+   | 區域 | 建議對象 |
+   |------|---------|
+   | **Asia - Taiwan** 🇹🇼 | 台灣使用者（推薦！速度最快） |
+   | **Asia - Tokyo** 🇯🇵 | 日本或東亞使用者 |
+   | **US - West** 🇺🇸 | 美國或歐美使用者 |
+
+   > 💡 如果你的目標讀者主要在台灣，選擇 Taiwan 會讓網站載入更快
+
+4. **點擊確認**
+
+   點擊「**Create**」建立專案
+
+5. **進入專案**
+
+   專案建立後，你會看到一個空白的專案頁面。接下來我們要在這裡加入服務。
 
 ---
 
 ## 步驟三：部署 MongoDB 資料庫
 
-網站需要 MongoDB 資料庫來儲存資料。Zeabur 提供一鍵建立 MongoDB 的功能。
+> ⏱️ 預計時間：3 分鐘
 
-1. 在專案頁面，點擊「Add Service」
-2. 選擇「Marketplace」分頁
-3. 搜尋並選擇「MongoDB」
-4. 點擊「Deploy」開始部署
+### 什麼是 MongoDB？
 
-部署完成後，你會看到 MongoDB 服務出現在專案中。
+MongoDB 是一種資料庫，用來儲存你網站的所有資料，包括：
 
-### 取得 MongoDB 連接字串
+- 你的個人簡介
+- 所有作品的資料（標題、描述、圖片連結等）
+- 技能清單
+- 聯絡資訊
+- 後台管理員帳號
 
-1. 點擊 MongoDB 服務卡片
-2. 切換到「Connect」分頁
-3. 複製「Connection String」，格式如下：
+沒有資料庫，網站就無法記住任何東西。
+
+### 部署 MongoDB
+
+1. **新增服務**
+
+   在專案頁面，點擊「**Add Service**」按鈕
+
+   > 💡 這個按鈕通常在頁面中間或右上角
+
+2. **選擇 Marketplace**
+
+   在彈出的選單中，切換到「**Marketplace**」分頁
+
+   > 💡 Marketplace 是 Zeabur 提供的現成服務市集
+
+3. **搜尋 MongoDB**
+
+   在搜尋框輸入 `MongoDB`，然後點擊搜尋結果中的「**MongoDB**」
+
+4. **開始部署**
+
+   點擊「**Deploy**」按鈕
+
+5. **等待部署完成**
+
+   Zeabur 會自動建立 MongoDB 服務，這需要約 30 秒到 1 分鐘。
+
+   當你看到 MongoDB 的卡片出現在專案頁面，且狀態顯示為「**Running**」（綠色），表示部署成功！
+
+### 取得 MongoDB 連接資訊
+
+> ⚠️ **重要**：請務必完成這個步驟並記下連接資訊，稍後設定環境變數時會用到！
+
+1. **點擊 MongoDB 服務**
+
+   在專案頁面，點擊 MongoDB 的服務卡片
+
+2. **切換到 Connect 分頁**
+
+   在服務詳情頁面，點擊「**Connect**」分頁
+
+3. **複製連接字串**
+
+   找到「**Connection String**」（或「連接字串」），它看起來像這樣：
+
    ```
-   mongodb://root:xxxxxxxx@xxx.clusters.zeabur.com:12345
-   ```
-4. **重要**：在連接字串最後加上資料庫名稱，例如：
-   ```
-   mongodb://root:xxxxxxxx@xxx.clusters.zeabur.com:12345/portfolio
+   mongodb://root:a1b2c3d4e5f6@svc-xxx.clusters.zeabur.com:27017
    ```
 
-> 請保存這個連接字串，稍後設定環境變數時會用到。
+   點擊旁邊的複製按鈕 📋，將它複製下來
+
+4. **加上資料庫名稱**
+
+   > ⚠️ **超級重要**：你需要在連接字串最後加上資料庫名稱！
+
+   把複製的字串貼到記事本，然後在最後加上 `/portfolio`（或任何你喜歡的名稱）：
+
+   **修改前：**
+   ```
+   mongodb://root:a1b2c3d4e5f6@svc-xxx.clusters.zeabur.com:27017
+   ```
+
+   **修改後：**
+   ```
+   mongodb://root:a1b2c3d4e5f6@svc-xxx.clusters.zeabur.com:27017/portfolio
+   ```
+
+   > 💡 為什麼要加？因為一個 MongoDB 伺服器可以有很多資料庫，我們要指定要用哪一個。`portfolio` 就是資料庫的名字。
+
+5. **保存連接字串**
+
+   把完整的連接字串（包含 `/portfolio`）保存到安全的地方，例如：
+   - 記事本
+   - 備忘錄
+   - 密碼管理器
+
+   > ⚠️ 這個字串包含密碼，請不要分享給別人！
 
 ---
 
 ## 步驟四：部署 MinIO 物件儲存
 
-網站需要 MinIO 來儲存上傳的圖片（作品封面、個人照片等）。
+> ⏱️ 預計時間：3 分鐘
 
-1. 在專案頁面，點擊「Add Service」
-2. 選擇「Marketplace」分頁
-3. 搜尋並選擇「MinIO」
-4. 點擊「Deploy」開始部署
+### 什麼是 MinIO？
 
-部署完成後，你會看到 MinIO 服務出現在專案中。
+MinIO 是一種「物件儲存」服務，簡單來說就是用來存放檔案（主要是圖片）的地方。在這個網站中，MinIO 負責儲存：
+
+- 作品封面圖片
+- 作品內頁圖片
+- 你的個人照片
+- OG 分享圖片（社群媒體分享時顯示的圖片）
+
+### 為什麼不把圖片直接存在資料庫？
+
+技術上可以，但：
+- 圖片檔案很大，會讓資料庫變慢
+- MinIO 專門為儲存檔案設計，效能更好
+- MinIO 可以直接提供圖片網址，讓瀏覽器快速載入
+
+### 部署 MinIO
+
+1. **新增服務**
+
+   在專案頁面，點擊「**Add Service**」
+
+2. **選擇 Marketplace**
+
+   切換到「**Marketplace**」分頁
+
+3. **搜尋 MinIO**
+
+   在搜尋框輸入 `MinIO`，點擊搜尋結果中的「**MinIO**」
+
+4. **開始部署**
+
+   點擊「**Deploy**」
+
+5. **等待部署完成**
+
+   等待 MinIO 服務狀態變成「**Running**」（綠色）
 
 ### 取得 MinIO 連接資訊
 
-1. 點擊 MinIO 服務卡片
-2. 切換到「Connect」分頁
-3. 記下以下資訊：
+> ⚠️ **重要**：同樣請記下這些資訊，稍後會用到！
 
-| 項目 | 說明 |
-|------|------|
-| **Endpoint** | MinIO 伺服器位址（例如：`xxx.clusters.zeabur.com`） |
-| **Access Key** | 存取金鑰（通常是 `root` 或自動產生的值） |
-| **Secret Key** | 秘密金鑰 |
+1. **點擊 MinIO 服務卡片**
 
-> 請保存這些資訊，稍後設定環境變數時會用到。
+2. **切換到 Connect 分頁**
 
-### 設定 Bucket 名稱
+3. **記下以下三個資訊**：
 
-你可以自訂 Bucket 名稱，建議使用：
-- `portfolio` - 簡單易記
-- `your-name-portfolio` - 如果你有多個專案
+   | 項目 | 在哪裡找 | 範例值 |
+   |------|---------|--------|
+   | **Endpoint** | 標示為 Endpoint 或 Host | `svc-xxx.clusters.zeabur.com` |
+   | **Access Key** | 標示為 Username / Access Key / Root User | `root` 或一串隨機字元 |
+   | **Secret Key** | 標示為 Password / Secret Key / Root Password | 一串隨機字元 |
 
-> Bucket 會在首次上傳圖片時自動建立，並自動設定公開讀取權限。
+   > 💡 **關於 Endpoint**：只需要複製域名部分，**不要**包含 `https://` 開頭
+
+   **正確：** `svc-xxx.clusters.zeabur.com`
+
+   **錯誤：** `https://svc-xxx.clusters.zeabur.com`
+
+4. **決定 Bucket 名稱**
+
+   你需要自己想一個 Bucket（儲存桶）名稱，建議用：
+
+   - `portfolio`（簡單好記）
+   - `你的名字-portfolio`（避免跟別人重複）
+
+   > 💡 Bucket 就像是一個資料夾，用來分類存放檔案。名稱只能用小寫字母、數字和連字號。
+
+5. **整理並保存**
+
+   把收集到的資訊整理好：
+
+   ```
+   MINIO_ENDPOINT = svc-xxx.clusters.zeabur.com
+   MINIO_ACCESS_KEY = root
+   MINIO_SECRET_KEY = xxxxxxxxxxxxxxxx
+   MINIO_BUCKET_NAME = portfolio（你自己決定的名稱）
+   ```
 
 ---
 
 ## 步驟五：部署網站服務
 
-1. 在專案頁面，點擊「Add Service」
-2. 選擇「Git」分頁
-3. 找到並選擇你的 Portfolio Repository
-4. Zeabur 會自動偵測專案類型（Nuxt.js）
-5. 點擊「Deploy」開始部署
+> ⏱️ 預計時間：5 分鐘
 
-> 首次部署可能需要 2-5 分鐘，請耐心等待。
+現在我們要部署最重要的部分——你的作品集網站本身。
+
+### 部署網站
+
+1. **新增服務**
+
+   在專案頁面，點擊「**Add Service**」
+
+2. **選擇 Git**
+
+   這次切換到「**Git**」分頁（不是 Marketplace）
+
+   > 💡 因為網站是你自己的程式碼，存放在 GitHub 上
+
+3. **選擇你的 Repository**
+
+   你會看到你 GitHub 帳號下的所有專案列表。找到並點擊你的作品集專案。
+
+   > ⚠️ 找不到專案？可能需要點擊「Configure GitHub」授權 Zeabur 存取更多 Repository
+
+4. **確認專案類型**
+
+   Zeabur 會自動偵測你的專案類型，應該會顯示「**Nuxt.js**」或「**Node.js**」
+
+5. **開始部署**
+
+   點擊「**Deploy**」
+
+6. **等待部署**
+
+   > ⚠️ **第一次部署會比較久**，因為要下載所有依賴套件並建置網站。
+
+   預計等待時間：3-5 分鐘
+
+   你可以點擊服務卡片，然後切換到「**Deployments**」分頁查看部署進度。
+
+7. **確認部署成功**
+
+   當狀態變成「**Running**」，恭喜！網站已經部署好了。
+
+   > ⚠️ **但是**，網站現在還不能正常運作，因為我們還沒設定環境變數。
 
 ---
 
 ## 步驟六：環境變數設定
 
-這是最重要的步驟！網站需要正確的環境變數才能運作。
+> ⏱️ 預計時間：5 分鐘
 
-1. 點擊你的網站服務卡片
-2. 切換到「Variables」分頁
-3. 點擊「Add Variable」新增以下環境變數：
+### 什麼是環境變數？
 
-### 必填環境變數
+環境變數（Environment Variables）是一種告訴網站「設定資訊」的方式。例如：
 
-| 變數名稱 | 值 | 說明 |
-|---------|-----|------|
-| `MONGO_URI` | `mongodb://root:xxx@xxx.zeabur.com:12345/portfolio` | MongoDB 連接字串（步驟三取得的，記得加上資料庫名稱） |
-| `JWT_SECRET` | `your-super-secret-key-min-32-characters` | JWT 加密密鑰，請自行設定一個至少 32 個字元的隨機字串 |
-| `COOKIE_SECURE` | `true` | 生產環境必須設為 `true` |
-| `MINIO_ENDPOINT` | `xxx.clusters.zeabur.com` | MinIO 伺服器位址（步驟四取得，不含 `https://`） |
-| `MINIO_ACCESS_KEY` | `your_access_key` | MinIO 存取金鑰 |
-| `MINIO_SECRET_KEY` | `your_secret_key` | MinIO 秘密金鑰 |
-| `MINIO_BUCKET_NAME` | `portfolio` | Bucket 名稱（自訂） |
-| `MINIO_USE_SSL` | `true` | 使用 HTTPS（Zeabur 上必須為 `true`） |
+- 資料庫在哪裡？（MongoDB 連接字串）
+- 用什麼密鑰加密？（JWT Secret）
+- 圖片存在哪裡？（MinIO 設定）
 
-### 如何設定
+這些資訊不應該直接寫在程式碼裡（因為會被別人看到），所以我們用環境變數來設定。
 
-**MONGO_URI**
+### 設定環境變數
+
+1. **點擊網站服務卡片**
+
+   在專案頁面，點擊你的網站服務（不是 MongoDB 或 MinIO）
+
+2. **切換到 Variables 分頁**
+
+   點擊「**Variables**」分頁
+
+3. **逐一新增環境變數**
+
+   點擊「**Add Variable**」，然後一個一個新增以下變數：
+
+---
+
+### 📋 環境變數設定表
+
+#### 1️⃣ MONGO_URI（資料庫連接）
+
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `MONGO_URI` |
+| **Value** | 步驟三記下的 MongoDB 連接字串（記得要有 `/portfolio`） |
+
+**範例值：**
 ```
-mongodb://root:xxxxxxxx@xxx.clusters.zeabur.com:12345/portfolio
+mongodb://root:a1b2c3d4e5f6@svc-xxx.clusters.zeabur.com:27017/portfolio
 ```
-- 從 MongoDB 服務的 Connect 頁面複製
-- 在最後加上 `/portfolio`（或你想要的資料庫名稱）
 
-**JWT_SECRET**
-```
-請自行產生一個安全的隨機字串，例如：
-aBcDeFgHiJkLmNoPqRsTuVwXyZ123456789!@#
-```
-- 至少 32 個字元
-- 包含大小寫字母、數字
-- 可以加入特殊符號
-- **請勿使用範例中的值！**
+> ⚠️ 確認最後有加上 `/portfolio`（或你選擇的資料庫名稱）
 
-> 提示：你可以使用 [Random String Generator](https://www.random.org/strings/) 產生隨機字串
+---
 
-**COOKIE_SECURE**
-```
-true
-```
-- 生產環境固定設為 `true`
-- 這會啟用 HTTPS-only Cookie，提升安全性
+#### 2️⃣ JWT_SECRET（加密密鑰）
 
-**MINIO_ENDPOINT**
-```
-xxx.clusters.zeabur.com
-```
-- 從 MinIO 服務的 Connect 頁面取得
-- **注意**：不要加上 `https://`，只需要域名部分
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `JWT_SECRET` |
+| **Value** | 一串至少 32 個字元的隨機字串 |
 
-**MINIO_ACCESS_KEY 和 MINIO_SECRET_KEY**
-- 從 MinIO 服務的 Connect 頁面取得
-- 通常 Access Key 是 `root`，Secret Key 是自動產生的
+**如何產生？** 有幾種方式：
 
-**MINIO_BUCKET_NAME**
+**方式 A：線上產生器（最簡單）**
+
+前往 [Random.org 字串產生器](https://www.random.org/strings/?num=1&len=40&digits=on&upperalpha=on&loweralpha=on&unique=on&format=html&rnd=new)，它會自動產生一個隨機字串。
+
+**方式 B：自己亂打鍵盤**
+
+只要夠長夠亂就好，例如：
+```
+MySuper$ecretKey2024!@#aBcDeFgHiJkLmN
+```
+
+**方式 C：用指令產生（如果你會用終端機）**
+```bash
+openssl rand -base64 32
+```
+
+> ⚠️ **重要提醒**：
+> - 至少 32 個字元
+> - 不要用簡單的字串如 `password123`
+> - 設定後請保存好，忘記的話需要重新設定
+> - **絕對不要分享給別人！**
+
+---
+
+#### 3️⃣ COOKIE_SECURE（Cookie 安全設定）
+
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `COOKIE_SECURE` |
+| **Value** | `true` |
+
+> 💡 這個設定確保登入 Cookie 只能透過 HTTPS 傳輸，防止被竊取。
+
+---
+
+#### 4️⃣ MINIO_ENDPOINT（圖片儲存位址）
+
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `MINIO_ENDPOINT` |
+| **Value** | 步驟四記下的 MinIO Endpoint |
+
+**範例值：**
+```
+svc-xxx.clusters.zeabur.com
+```
+
+> ⚠️ **不要**加上 `https://`，只要域名部分
+
+---
+
+#### 5️⃣ MINIO_ACCESS_KEY（圖片儲存帳號）
+
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `MINIO_ACCESS_KEY` |
+| **Value** | 步驟四記下的 Access Key |
+
+---
+
+#### 6️⃣ MINIO_SECRET_KEY（圖片儲存密碼）
+
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `MINIO_SECRET_KEY` |
+| **Value** | 步驟四記下的 Secret Key |
+
+---
+
+#### 7️⃣ MINIO_BUCKET_NAME（圖片儲存空間名稱）
+
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `MINIO_BUCKET_NAME` |
+| **Value** | 你在步驟四決定的 Bucket 名稱 |
+
+**範例值：**
 ```
 portfolio
 ```
-- 自訂名稱，建議使用小寫字母和連字號
-- Bucket 會在首次上傳時自動建立
 
-**MINIO_USE_SSL**
-```
-true
-```
-- Zeabur 上固定設為 `true`（使用 HTTPS）
-- 本地開發時設為 `false`
+---
 
-### 設定完成後
+#### 8️⃣ MINIO_USE_SSL（使用加密連線）
 
-1. 點擊「Save」儲存環境變數
-2. 服務會自動重新部署
-3. 等待部署完成（約 1-2 分鐘）
+| 欄位 | 填入內容 |
+|-----|---------|
+| **Name** | `MINIO_USE_SSL` |
+| **Value** | `true` |
+
+---
+
+### 環境變數檢查清單
+
+設定完成後，確認你有以下 8 個環境變數：
+
+| # | 變數名稱 | 已設定 |
+|---|---------|-------|
+| 1 | `MONGO_URI` | ☐ |
+| 2 | `JWT_SECRET` | ☐ |
+| 3 | `COOKIE_SECURE` | ☐ |
+| 4 | `MINIO_ENDPOINT` | ☐ |
+| 5 | `MINIO_ACCESS_KEY` | ☐ |
+| 6 | `MINIO_SECRET_KEY` | ☐ |
+| 7 | `MINIO_BUCKET_NAME` | ☐ |
+| 8 | `MINIO_USE_SSL` | ☐ |
+
+### 儲存並重新部署
+
+1. **儲存變數**
+
+   確認所有變數都填好後，點擊「**Save**」
+
+2. **等待重新部署**
+
+   Zeabur 會自動重新部署網站，套用新的環境變數。等待約 1-2 分鐘。
 
 ---
 
 ## 步驟七：綁定網域
 
-### 使用 Zeabur 免費網域
+> ⏱️ 預計時間：2 分鐘
 
-1. 點擊網站服務卡片
-2. 切換到「Networking」分頁
-3. 點擊「Generate Domain」
-4. 你會得到一個免費網域，格式如：`your-project.zeabur.app`
+### 什麼是網域？
 
-### 使用自訂網域（選用）
+網域就是網站的「地址」，例如 `google.com`、`facebook.com`。沒有網域，別人就無法找到你的網站。
 
-如果你有自己的網域：
+Zeabur 提供免費的子網域，讓你可以立即分享網站。
 
-1. 在「Networking」分頁，點擊「Add Domain」
-2. 輸入你的網域（例如：`portfolio.example.com`）
-3. 按照指示在你的 DNS 服務商設定 CNAME 記錄：
-   - 類型：`CNAME`
-   - 名稱：`portfolio`（或你的子網域）
-   - 值：`cname.zeabur.com`
-4. 等待 DNS 生效（通常 5-30 分鐘）
+### 取得免費網域
+
+1. **點擊網站服務卡片**
+
+2. **切換到 Networking 分頁**
+
+3. **產生網域**
+
+   點擊「**Generate Domain**」
+
+4. **取得你的網址**
+
+   Zeabur 會自動產生一個網域，格式為：
+
+   ```
+   https://你的專案名稱.zeabur.app
+   ```
+
+   例如：`https://my-portfolio.zeabur.app`
+
+5. **記下你的網址**
+
+   這就是你的作品集網站網址！
+
+### 使用自訂網域（進階，選用）
+
+如果你有自己購買的網域（例如 `yourname.com`），也可以綁定到 Zeabur：
+
+1. 在「Networking」分頁，點擊「**Add Domain**」
+
+2. 輸入你的網域，例如 `portfolio.yourname.com`
+
+3. 到你的網域 DNS 設定（通常在你購買網域的地方，如 GoDaddy、Namecheap、Cloudflare 等）
+
+4. 新增一筆 CNAME 記錄：
+
+   | 類型 | 名稱 | 值 |
+   |-----|------|-----|
+   | CNAME | portfolio（你的子網域） | `cname.zeabur.com` |
+
+5. 等待 DNS 生效（5 分鐘到數小時不等）
+
+> 💡 如果不確定怎麼設定 DNS，可以先用 Zeabur 免費網域，之後再研究自訂網域。
 
 ---
 
-## 部署完成！
+## 步驟八：驗證部署是否成功
 
-恭喜！你的作品集網站已經上線了！
+> ⏱️ 預計時間：2 分鐘
 
-### 存取網站
+恭喜你完成部署！現在讓我們確認一切正常運作。
 
-- **前台**：`https://your-domain.zeabur.app`
-- **後台**：`https://your-domain.zeabur.app/admin`
+### 測試前台網站
 
-### 預設管理員帳號
+1. **開啟你的網站**
 
-首次部署後，系統會自動建立預設管理員帳號：
+   在瀏覽器輸入你的網址（例如 `https://my-portfolio.zeabur.app`）
 
-| 帳號 | 密碼 |
-|------|------|
-| admin | Admin123456 |
+2. **確認頁面正常顯示**
 
-> **安全提醒**：請立即登入後台並修改密碼！
+   你應該會看到作品集首頁。因為還沒新增資料，可能會比較空。
+
+### 測試後台登入
+
+1. **前往後台**
+
+   在網址後面加上 `/admin`，例如：
+   ```
+   https://my-portfolio.zeabur.app/admin
+   ```
+
+2. **使用預設帳號登入**
+
+   系統會自動建立一個預設管理員帳號：
+
+   | 帳號 | 密碼 |
+   |-----|------|
+   | `admin` | `Admin123456` |
+
+3. **確認成功登入**
+
+   如果看到後台管理介面，代表一切設定正確！
+
+### ⚠️ 立即修改密碼！
+
+為了安全起見，請**立即**修改預設密碼：
+
+1. 登入後台
+2. 前往「使用者管理」或「帳號設定」
+3. 修改密碼為你自己的強密碼
+
+### 測試圖片上傳
+
+1. 在後台嘗試上傳一張圖片（例如編輯個人資料，上傳大頭照）
+2. 如果上傳成功並能正常顯示，代表 MinIO 設定正確！
+
+### ✅ 部署成功檢查清單
+
+| 項目 | 狀態 |
+|-----|------|
+| 前台首頁可以正常開啟 | ☐ |
+| 可以用預設帳密登入後台 | ☐ |
+| 後台頁面正常顯示 | ☐ |
+| 圖片上傳功能正常 | ☐ |
+| 已修改預設密碼 | ☐ |
+
+如果以上都確認完成，**恭喜你！你的作品集網站已經正式上線了！** 🎉
 
 ---
 
 ## 常見問題
 
-### Q: 網站顯示錯誤或無法連接資料庫？
+### 💥 網站打不開 / 顯示錯誤
 
-**A:** 請檢查環境變數設定：
+**可能原因與解決方法：**
 
-1. 確認 `MONGO_URI` 格式正確
-2. 確認連接字串最後有加上資料庫名稱（如 `/portfolio`）
-3. 確認 MongoDB 服務正在運行
-4. 重新部署服務
+1. **環境變數沒設定好**
+   - 檢查是否漏了某個環境變數
+   - 檢查 `MONGO_URI` 最後是否有加上 `/portfolio`
+   - 檢查 `MINIO_ENDPOINT` 是否不小心包含了 `https://`
 
-### Q: 登入後台時顯示錯誤？
+2. **服務還沒啟動完成**
+   - 回到 Zeabur，確認三個服務（網站、MongoDB、MinIO）都是「Running」狀態
+   - 如果有服務顯示錯誤，點進去看 Logs 找原因
 
-**A:** 請檢查：
+3. **部署還在進行中**
+   - 第一次部署需要幾分鐘，耐心等待
 
-1. `JWT_SECRET` 是否已設定且至少 32 個字元
-2. `COOKIE_SECURE` 是否設為 `true`
-3. 是否使用 HTTPS 存取網站
+### 💥 無法登入後台
 
-### Q: 如何重置管理員密碼？
+**可能原因與解決方法：**
 
-**A:** 你需要連接到 MongoDB 資料庫：
+1. **JWT_SECRET 沒設定或太短**
+   - 確認 `JWT_SECRET` 環境變數存在
+   - 確認長度至少 32 個字元
 
-1. 在 Zeabur 的 MongoDB 服務中，使用 Connect 功能
-2. 或者刪除 `admin_users` collection 中的資料
-3. 重新部署網站服務，系統會自動建立預設帳號
+2. **COOKIE_SECURE 設定錯誤**
+   - 確認設為 `true`
+   - 確認你是用 `https://` 而不是 `http://` 存取網站
 
-### Q: 部署失敗怎麼辦？
+3. **帳號密碼錯誤**
+   - 預設帳號是 `admin`，密碼是 `Admin123456`（注意大小寫）
 
-**A:** 請檢查：
+### 💥 圖片上傳失敗
 
-1. 查看 Zeabur 的 Deployment Logs 找出錯誤原因
-2. 確認所有環境變數都已正確設定
-3. 確認 GitHub Repository 的程式碼沒有語法錯誤
+**可能原因與解決方法：**
 
-### Q: 如何更新網站？
+1. **MinIO 環境變數沒設定好**
+   - 檢查四個 MinIO 相關變數是否都有設定
+   - `MINIO_ENDPOINT` 不要包含 `https://`
+   - `MINIO_USE_SSL` 要設為 `true`
 
-**A:** 只需要 Push 新的程式碼到 GitHub：
+2. **MinIO 服務沒在運行**
+   - 確認 MinIO 服務狀態是「Running」
 
-1. 修改程式碼
-2. `git push` 到 GitHub
-3. Zeabur 會自動偵測變更並重新部署
+### 💥 圖片上傳成功但看不到
 
-### Q: 圖片上傳失敗或無法顯示？
+**可能原因與解決方法：**
 
-**A:** 請檢查 MinIO 設定：
+這通常是 Bucket 權限問題。系統會自動設定公開讀取權限，但如果還是有問題：
 
-1. 確認所有 MinIO 環境變數都已設定
-2. 確認 `MINIO_ENDPOINT` 不包含 `https://`
-3. 確認 `MINIO_USE_SSL` 設為 `true`
-4. 確認 MinIO 服務正在運行
-5. 查看 Deployment Logs 是否有 MinIO 相關錯誤
+1. 重新部署網站服務（點擊 Redeploy）
+2. 或等待幾分鐘讓權限生效
 
-### Q: 圖片上傳成功但無法公開存取？
+### 💥 如何查看錯誤訊息？
 
-**A:** 這通常是 Bucket 權限問題：
+1. 在 Zeabur 點擊你的網站服務
+2. 切換到「**Deployments**」分頁
+3. 點擊最新的部署
+4. 查看「**Logs**」，裡面會有詳細的錯誤訊息
 
-1. 系統會自動設定公開讀取權限
-2. 如果仍有問題，可以在後台呼叫 `/api/admin/upload/fix-policy` API 重新設定權限
-3. 或者重新部署網站服務
+### 💥 如何完全重置？
+
+如果設定亂掉想重來：
+
+1. **刪除 MongoDB 資料**
+   - 在 Zeabur 刪除 MongoDB 服務，重新建立一個
+   - 或者連接到 MongoDB 刪除資料庫
+
+2. **重新部署網站**
+   - 在網站服務點擊「Redeploy」
+   - 系統會自動建立新的預設管理員帳號
+
+### 💥 如何更新網站？
+
+當你修改程式碼後，想要更新線上網站：
+
+1. 在本地 commit 你的修改
+2. Push 到 GitHub
+   ```bash
+   git add .
+   git commit -m "更新內容"
+   git push
+   ```
+3. Zeabur 會自動偵測到新的 commit 並重新部署
+4. 等待部署完成（約 1-2 分鐘）
 
 ---
 
 ## 費用說明
 
-Zeabur 的計費方式：
+### Zeabur 計費方式
 
-- **免費額度**：每月有一定的免費使用額度
-- **計費方式**：超過免費額度後，按使用量計費
-- **MongoDB**：內建的 MongoDB 服務包含在計費中
-- **MinIO**：內建的 MinIO 服務包含在計費中（依儲存空間和流量計費）
+Zeabur 採用「用多少付多少」的計費方式：
 
-建議先使用免費額度測試，確認一切正常後再考慮是否升級方案。
+| 項目 | 說明 |
+|-----|------|
+| **免費額度** | 每月有一定的免費額度（足夠個人作品集使用） |
+| **計算資源** | CPU 和記憶體使用量 |
+| **資料庫** | MongoDB 儲存空間和連線數 |
+| **物件儲存** | MinIO 儲存空間和流量 |
 
-詳細價格請參考：[Zeabur Pricing](https://zeabur.com/pricing)
+### 個人作品集網站大約花費？
+
+對於一般個人作品集網站：
+- 流量不高（每月幾百到幾千次瀏覽）
+- 圖片不多（幾十張作品圖片）
+- 資料量小（幾十筆作品資料）
+
+**通常落在免費額度內，或每月只需幾美元。**
+
+### 建議
+
+1. **先用免費額度測試**
+   - 確認一切正常運作
+   - 觀察實際使用量
+
+2. **設定用量警示**
+   - 在 Zeabur 設定當用量超過某個值時通知你
+
+3. **定期檢查帳單**
+   - 確保沒有意外的高額費用
+
+詳細價格請參考：[Zeabur 定價頁面](https://zeabur.com/pricing)
+
+---
+
+## 後續建議
+
+部署完成後，你可以：
+
+### 1. 開始新增內容
+
+- 登入後台
+- 新增你的個人資料和大頭照
+- 新增你的作品（記得上傳好看的封面圖！）
+- 設定你的技能清單
+- 填寫聯絡資訊
+
+### 2. 選擇網站風格
+
+後台的「網站設定」可以讓你一鍵切換 6 種不同風格：
+
+| 風格 | 適合 |
+|-----|------|
+| 經典優雅 | 傳統、穩重的作品集 |
+| 現代極簡 | 注重留白、簡約設計 |
+| 創意大膽 | 想要吸引眼球、有個性 |
+| 日系清新 | 喜歡柔和、溫馨氛圍 |
+| 科技未來 | 工程師、科技領域 |
+| 野獸派 | 超有個性、難忘的第一印象 |
+
+### 3. 分享你的作品集
+
+把網址分享給：
+- 放在履歷上
+- 放在 LinkedIn 等社群媒體
+- 寄給潛在客戶或雇主
 
 ---
 
 ## 需要幫助？
 
-- [Zeabur 官方文件](https://zeabur.com/docs)
-- [Zeabur Discord 社群](https://discord.gg/zeabur)
+如果遇到問題：
+
+1. **查看 Zeabur 官方文件**
+   - [Zeabur Docs](https://zeabur.com/docs)
+
+2. **加入 Zeabur Discord 社群**
+   - [Zeabur Discord](https://discord.gg/zeabur)
+   - 可以用中文發問，有很多熱心的人會幫忙
+
+3. **在 GitHub 回報問題**
+   - 如果是這個專案本身的問題，可以在 GitHub 開 Issue
 
 ---
 
@@ -338,4 +892,6 @@ Zeabur 的計費方式：
 
 ---
 
-祝你部署順利！
+🎉 **恭喜你完成部署！**
+
+現在你有了一個專業的作品集網站，趕快去新增你的作品吧！
