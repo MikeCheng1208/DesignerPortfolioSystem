@@ -66,8 +66,8 @@
 
 1. **複製專案**
    ```bash
-   git clone https://github.com/your-username/designer-portfolio.git
-   cd designer-portfolio
+   git clone https://github.com/MikeCheng1208/DesignerPortfolioSystem.git
+   cd DesignerPortfolioSystem
    ```
 
 2. **安裝依賴**
